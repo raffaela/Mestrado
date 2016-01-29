@@ -37,13 +37,5 @@ fs=2000;  %frequencia de amostragem
    sinal_extensor=sinais(1,:);
    sinal_ac=dados_arquivo.dados.ARQdig(4,:);
    
-%    vt=0:1/fs:(length(sinais)-1)/fs;
-%    figure
-%    plot(vt,sinal_extensor);
-%    hold on;
-%    plot(pos_mov_teste/fs,sinal_extensor(pos_mov_teste),'ko','MarkerFaceColor','r');
-%    figure
-%    plot(vt,sinal_ac);
-%    hold on;
-%    plot(pos_mov_teste/fs,sinal_ac(pos_mov_teste),'ko','MarkerFaceColor','r');
+
 
