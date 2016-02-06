@@ -1,4 +1,4 @@
-function [limiar_TFE,param1,param2]=trainingEMG(fs,canais_reais,M,N,frinicial,frfinal,frinicial2,frfinal2,cell_sinais,cell_acel,tipoclass,tipodet)
+function [param1,param2]=trainingEMG(fs,canais_reais,M,N,frinicial,frfinal,frinicial2,frfinal2,cell_sinais,cell_acel,tipoclass,tipodet)
 
 
 ncanais_dados=3;
@@ -15,11 +15,7 @@ movimento=struct('pos_mov',{},'pos_rel',{});
 meanfreq=mean(mfreq);
 Gr=[];
 Tr=[];
-
-if tipodet=='v2',
-    limiar_TFE=ones(2,lcanais)*1000; %ser definido um limiar para cada canal para cada coleta.
-else limiar_TFE=[];
-end
+limiar_TFE=ones(2,length(canais))*1000; %ser definido um limiar para cada canal para cada coleta.
       
 for icoleta=1:2,
      ax=[];
@@ -72,11 +68,6 @@ for icoleta=1:2,
         vcrit_s=finv(0.95,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
         vcrit_i=finv(0.05,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
         if tipodet=='v2',
-                for l=0:length(TFE)-1
-                    TFEt(l*N+1:l*N+N)=TFE(l+1);
-                end
-                rep=zeros(1,2*M*N-N); %amostras iniciais nao tem valor do TFE atribuido e portanto recebem 100(valor alto para nao influenciar o minimo).
-                TFEt_final=[rep TFEt];
                 TFEt_rel=TFEt_final;
                 for icontr=length(pos_mov):-1:1,
                     if pos_rel(icontr)+1000<=length(TFEt_final),

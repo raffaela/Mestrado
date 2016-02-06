@@ -8,6 +8,7 @@ canal_ext=1;
 canal_flex=2;
 ncanais_dados=3;
 tipoclass='LDA';
+tipodet='v1';
 canal_ac=1+ncanais_dados;
 canais=canais_reais+ncanais_dados*ones(1,length(canais_reais));
 carregasinais=['treinamento extensao','treinamento flexao','teste extensao','teste flexao']
@@ -53,6 +54,6 @@ for i=1:4
    
 end
 
-[cell_cmd_plot]=mainEMG(canais_reais,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass);
-[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,cell_acel,cell_cmd_plot);
+[cell_cmd_plot]=mainEMG(canais_reais,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
+[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,cell_acel,cell_cmd_plot);
 

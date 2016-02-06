@@ -1,4 +1,4 @@
-function [prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,cell_acel,cell_cmd_plot)
+function [prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,cell_acel,cell_cmd_plot)
 %métricas de resultados do detector
 prec_ext=0;
 sens_ext=0;
@@ -111,7 +111,7 @@ total_v_win_rep=sum(num_v_win_rep);
 overall_acc=(num_vp_win(1)+num_vp_win(2)+total_vp_rep)/(num_v_win(1)+num_v_win(2)+total_v_win_rep);
 
 %% salva resultados em arquivo
-arq_resultado=strcat(voluntario,'_',tipoclass,'_TFE_resultado_teste.mat');
+arq_resultado=strcat(voluntario,'_',tipoclass,'_',tipodet,'_TFE_resultado_teste.mat');
 save(char(arq_resultado),'prec_ext','sens_ext','prec_flex','sens_flex','esp_ext','esp_flex','overall_acc');
 %%    
 %são calculados a especificidade e precisão para cada padrão(classe).
