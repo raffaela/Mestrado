@@ -15,7 +15,7 @@ function [cell_cmd_plot]=mainEMG_todos(canais_reais,canal_ext,canal_flex,cell_si
     lcanais=length(canais_reais);
     %% chama funcao de treinamento
    
-    [param1,param2]=trainingEMG_todos(fs,canais_reais,M,N,frinicial,frfinal,frinicial2,frfinal2,cell_sinais,cell_acel,tipoclass);
+    [param1,param2]=trainingEMG(fs,canais_reais,M,N,frinicial,frfinal,frinicial2,frfinal2,cell_sinais,cell_acel,tipoclass);
     %Para TFE: param1=limiar,param2=maior
     %Para LDA: param1=Tr, param2=Gr
 
