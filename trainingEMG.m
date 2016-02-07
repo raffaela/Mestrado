@@ -1,4 +1,4 @@
-function [limiar_TFE,param1,param2]=trainingEMG(fs,canais_reais,M,N,frinicial,frfinal,frinicial2,frfinal2,cell_sinais,cell_acel,tipoclass,tipodet)
+function [limiar_TFE,param1,param2]=trainingEMG(fs,canais_reais,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet)
 
 
 ncanais_dados=3;
@@ -45,8 +45,8 @@ for icoleta=1:2,
         sinal=reshape(sinal,N,E);  %sinal transformado em matriz com cada coluna correspondendo a um trecho e cada linha correspondendo a uma amostra (ponto) do sinal.
         Sf=fft(sinal); % Calculo do espectro do sinal para cada trecho (coluna).
 
-        %nbins=frfinal-frinicial+1;
-        nbins=(frfinal-frinicial)+1+(frfinal2-frinicial2)+1;
+        nbins=frfinal-frinicial+1;
+        %nbins=(frfinal-frinicial)+1+(frfinal2-frinicial2)+1;
         % Vetor de frequencias
         resf=(fs*nbins)/(N); % resolucao espectral (considerando as bandas de frequencia)
         fr=[0:resf:resf*(N/(2*nbins)-1)];  %vetor de frequencias de acordo com a resf.
@@ -57,12 +57,12 @@ for icoleta=1:2,
          for l=2*M:E,
             Xt0=sum(abs(Sf(:,l-2*M+1:l-M).^2),2);
             Xt=[];
-           % Xt=sum(Xt0(frinicial:frfinal));
-            Xt=sum(Xt0(frinicial:frfinal))+sum(Xt0(frinicial2:frfinal2));
+            Xt=sum(Xt0(frinicial:frfinal));
+            %Xt=sum(Xt0(frinicial:frfinal))+sum(Xt0(frinicial2:frfinal2));
             Yt0=sum(abs(Sf(:,l-M+1:l).^2),2);  % numerador da equacao da TFE considerando frequencias individuais
             Yt=[];
-            %Yt=sum(Yt0(frinicial:frfinal))
-            Yt=sum(Yt0(frinicial:frfinal))+sum(Yt0(frinicial2:frfinal2));
+            Yt=sum(Yt0(frinicial:frfinal))
+            %Yt=sum(Yt0(frinicial:frfinal))+sum(Yt0(frinicial2:frfinal2));
             TFE(1,l-2*M+1)=Yt./Xt; % cada coluna desta matriz corresponde a TFE calculada para um conjunto de trechos diferentes de y[k].   
             Yt_f(1,l-2*M+1)=Yt;
          end

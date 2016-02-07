@@ -1,4 +1,4 @@
-function [TFEt,comando,Yt_final,Sf]= onlineEMG(fs,sinais,frinicial,frfinal,frinicial2,frfinal2,limiar_TFE,param1,param2,M,N,tipoclass)
+function [TFEt,comando,Yt_final,Sf]= onlineEMG(fs,sinais,frinicial,frfinal,limiar_TFE,param1,param2,M,N,tipoclass)
 %comando:0=repouso;1=extensao;2=flexao
     lcanais=size(sinais,1);
     fmean=[];
@@ -23,8 +23,8 @@ function [TFEt,comando,Yt_final,Sf]= onlineEMG(fs,sinais,frinicial,frfinal,frini
             Sf=[Sf; Sf_canal];
         end   
        
-      
-        nbins=(frfinal-frinicial)+1+(frfinal2-frinicial2)+1; %numero de amostras (pontos) de frequencia a serem "unificados" em uma banda.
+        nbins=frfinal-frinicial+1;
+        %nbins=(frfinal-frinicial)+1+(frfinal2-frinicial2)+1; %numero de amostras (pontos) de frequencia a serem "unificados" em uma banda.
 
         % Vetor de frequencias
         resf=(fs*nbins)/(N); % resolucao espectral (considerando as bandas de frequencia)
@@ -39,12 +39,12 @@ function [TFEt,comando,Yt_final,Sf]= onlineEMG(fs,sinais,frinicial,frfinal,frini
          for canal=1:lcanais
             Xt0=sum(abs(Sf(N*(canal-1)+1:N*canal,1:M).^2),2);
             Xt=[];
-              %Xt=sum(Xt0(frinicial:frfinal));   
-              Xt=sum(Xt0(frinicial:frfinal))+sum(Xt0(frinicial2:frfinal2));
+              Xt=sum(Xt0(frinicial:frfinal));   
+              %Xt=sum(Xt0(frinicial:frfinal))+sum(Xt0(frinicial2:frfinal2));
             Yt0=sum(abs(Sf(N*(canal-1)+1:N*canal,M+1:2*M).^2),2);  % numerador da equacao da TFE considerando frequencias individuais
             Yt=[];
-              %Yt=sum(Yt0(frinicial:frfinal));  
-              Yt=sum(Yt0(frinicial:frfinal))+sum(Yt0(frinicial2:frfinal2));
+              Yt=sum(Yt0(frinicial:frfinal));  
+              %Yt=sum(Yt0(frinicial:frfinal))+sum(Yt0(frinicial2:frfinal2));
             Yt_final=[Yt_final;Yt];
             Xt_final=[Xt_final;Xt];
 

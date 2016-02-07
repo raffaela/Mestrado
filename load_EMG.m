@@ -4,11 +4,7 @@ dados=[];
 canais_reais=[2 3 4 6 7 8];
 fs=2000;
 N=200;
-canal_ext=1;
-canal_flex=2;
 ncanais_dados=3;
-tipoclass='LDA';
-tipodet='v1';
 canal_ac=1+ncanais_dados;
 canais=canais_reais+ncanais_dados*ones(1,length(canais_reais));
 carregasinais=['treinamento extensao','treinamento flexao','teste extensao','teste flexao']
@@ -53,6 +49,11 @@ for i=1:4
    cell_acel{1,i}=dados_arquivo.dados.acel;
    
 end
+
+canal_ext=1;
+canal_flex=4;
+tipoclass='TFE';
+tipodet='v2';
 
 [cell_cmd_plot]=mainEMG(canais_reais,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
 [prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,cell_acel,cell_cmd_plot);

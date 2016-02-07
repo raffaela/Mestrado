@@ -6,16 +6,19 @@ function [cell_cmd_plot]=mainEMG_todos(canais_reais,canal_ext,canal_flex,cell_si
     %% inicializa variaveis
     N=200; %numero de amostras(pontos) por trecho.
     M=5; %numero de trechos a serem utilizados para o calculo da TFE.
-    frinicial=7;%18
-    frfinal=12;%25
-    frinicial2=18;%7
-    frfinal2=25;%12
+%     frinicial=7;%18
+%     frfinal=12;%25
+%     frinicial2=18;%7
+%     frfinal2=25;%12
     fs=2000;  %frequencia de amostragem
-    ndet_min=5; %minimo de janelas seguidas indicando ativacao muscular no musculo agonista para que a classificacao se confirme
+    res_esp=fs/N;
+    frinicial=80/res_esp;%18
+    frfinal=130/res_esp;%25
+    ndet_min=2; %minimo de janelas seguidas indicando ativacao muscular no musculo agonista para que a classificacao se confirme
     lcanais=length(canais_reais);
     %% chama funcao de treinamento
    
-    [limiar_TFE,param1,param2]=trainingEMG(fs,canais_reais,M,N,frinicial,frfinal,frinicial2,frfinal2,cell_sinais,cell_acel,tipoclass,tipodet);
+    [limiar_TFE,param1,param2]=trainingEMG(fs,canais_reais,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet);
     %Para TFE: param1=limiar,param2=maior
     %Para LDA: param1=Tr, param2=Gr
 
@@ -41,7 +44,7 @@ function [cell_cmd_plot]=mainEMG_todos(canais_reais,canal_ext,canal_flex,cell_si
         ffts=[];
         %% realiza a classificacao janela a janela (cada uma com N amostras)
         for i=P+1:N:length(sinais),
-            [TFEt,comando,Yt,Sf]=onlineEMG(fs,sinais(:,i-P:i-1),frinicial,frfinal,frinicial2,frfinal2,limiar_TFE,param1,param2,M,N,tipoclass);
+            [TFEt,comando,Yt,Sf]=onlineEMG(fs,sinais(:,i-P:i-1),frinicial,frfinal,limiar_TFE,param1,param2,M,N,tipoclass);
 
             TFEt_final=[TFEt_final TFEt];
             cmd=0;
