@@ -1,4 +1,4 @@
-function [prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,cell_acel,cell_cmd_plot)
+function [prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,lcanais,cell_acel,cell_cmd_plot)
 %mÈtricas de resultados do detector
 prec_ext=0;
 sens_ext=0;
@@ -55,14 +55,14 @@ for isinal=1:length(vect_isinal),
     for k=1:size(verdade_mov,1),
             find_vp=find((cmd_plot(verdade_mov(k,1):verdade_mov(k,2)))==vect_isinal(isinal));
             find_rep=find((cmd_plot(verdade_mov(k,1):verdade_mov(k,2))==0)|(cmd_plot(verdade_mov(k,1):verdade_mov(k,2))==-1));
-            if length(find_vp)>=floor((verdade_mov(k,2)-verdade_mov(k,1))/3),%considera-se verdadeiro positivo se mais da metade do trecho for verdadeiro positivo 
+            if length(find_vp)>=floor((verdade_mov(k,2)-verdade_mov(k,1))/3),%considera-se verdadeiro positivo se mais da um terco do trecho for verdadeiro positivo 
                 if length(find_rep)>=verdade_mov(k,2)-verdade_mov(k,1)-length(find_vp),
                     num_vp=num_vp+1;
                 end
             else num_fn=num_fn+1;
             end
             find_fp_2=find((cmd_plot(verdade_mov(k,1):verdade_mov(k,2)))==setdiff(vect_isinal,vect_isinal(isinal)));
-            if length(find_fp_2)>=floor((verdade_mov(k,2)-verdade_mov(k,1))/3),%considera-se verdadeiro positivo se mais da metade do trecho for verdadeiro positivo 
+            if length(find_fp_2)>=floor((verdade_mov(k,2)-verdade_mov(k,1))/3),%considera-se verdadeiro positivo se mais de um terco do trecho for verdadeiro positivo 
                if length(find_rep)>=verdade_mov(k,2)-verdade_mov(k,1)-length(find_fp_2),
                    num_fp_2=num_fp_2+1;
                else num_vn_2=num_vn_2+1;
@@ -73,13 +73,13 @@ for isinal=1:length(vect_isinal),
      for l=1:size(verdade_rep,1),
             teste_rep=0;
             find_fp=find((cmd_plot(verdade_rep(l,1):verdade_rep(l,2)))==vect_isinal(isinal));
-            if length(find_fp)>=floor((verdade_rep(l,2)-verdade_rep(l,1))/3),%considera-se verdadeiro positivo se mais da metade do trecho for verdadeiro positivo 
+            if length(find_fp)>=floor((verdade_rep(l,2)-verdade_rep(l,1))/3),%considera-se verdadeiro positivo se mais de um terco do trecho for verdadeiro positivo 
                 num_fp=num_fp+1;
             else num_vn=num_vn+1;
                  teste_rep=1;
             end
             find_fp_2=find((cmd_plot(verdade_rep(l,1):verdade_rep(l,2)))==setdiff(vect_isinal,vect_isinal(isinal)));
-            if length(find_fp_2)>floor((verdade_rep(l,2)-verdade_rep(l,1))/3),%considera-se verdadeiro positivo se mais da metade do trecho for verdadeiro positivo 
+            if length(find_fp_2)>floor((verdade_rep(l,2)-verdade_rep(l,1))/3),%considera-se verdadeiro positivo se mais de um terco do trecho for verdadeiro positivo 
                num_fp_2=num_fp_2+1;
             else num_vn_2=num_vn_2+1;   
                  teste_rep=1;
@@ -110,9 +110,13 @@ total_vp_rep=sum(num_vp_rep_win);
 total_v_win_rep=sum(num_v_win_rep);
 overall_acc=(num_vp_win(1)+num_vp_win(2)+total_vp_rep)/(num_v_win(1)+num_v_win(2)+total_v_win_rep);
 
-%% salva resultados em arquivo
-arq_resultado=strcat(voluntario,'_',tipoclass,'_',tipodet,'_TFE_resultado_teste.mat');
-save(char(arq_resultado),'prec_ext','sens_ext','prec_flex','sens_flex','esp_ext','esp_flex','overall_acc');
+%% salva resultados em arquivo .mat e .xlsxl
+dir_resultado='C:\Users\rafaelacunha\Dropbox\processamento_dissertacao\resultados';
+arq_resultado_mat=strcat(voluntario,'_',tipoclass,'_',tipodet,'_',int2str(lcanais),'_resultado.mat');
+path_resultado_mat=fullfile(dir_resultado,arq_resultado_mat);
+save(char(path_resultado_mat),'prec_ext','sens_ext','prec_flex','sens_flex','esp_ext','esp_flex','overall_acc');
+% T = table(prec_ext,sens_ext,prec_flex,sens_flex,esp_ext,esp_flex,overall_acc);
+% writetable(T,filename,'Sheet',1,'Range','D1')
 %%    
 %s„o calculados a especificidade e precis„o para cada padr„o(classe).
 %Ex: haver· um valor de sensibilidade para a classe flex„O  e um para a

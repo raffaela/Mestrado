@@ -12,8 +12,8 @@ function [cell_cmd_plot]=mainEMG_todos(canais_reais,canal_ext,canal_flex,cell_si
 %     frfinal2=25;%12
     fs=2000;  %frequencia de amostragem
     res_esp=fs/N;
-    frinicial=80/res_esp;%18
-    frfinal=130/res_esp;%25
+    frinicial=30/res_esp;%18
+    frfinal=50/res_esp;%25
     ndet_min=2; %minimo de janelas seguidas indicando ativacao muscular no musculo agonista para que a classificacao se confirme
     lcanais=length(canais_reais);
     %% chama funcao de treinamento

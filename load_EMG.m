@@ -1,9 +1,10 @@
 clear all
 close all
 dados=[];
-canais_reais=[2 3 4 6 7 8];
+canais_reais=[4 7];
 fs=2000;
 N=200;
+lcanais=length(canais_reais);
 ncanais_dados=3;
 canal_ac=1+ncanais_dados;
 canais=canais_reais+ncanais_dados*ones(1,length(canais_reais));
@@ -51,10 +52,10 @@ for i=1:4
 end
 
 canal_ext=1;
-canal_flex=4;
+canal_flex=2;
 tipoclass='TFE';
-tipodet='v2';
+tipodet='v1';
 
 [cell_cmd_plot]=mainEMG(canais_reais,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
-[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,cell_acel,cell_cmd_plot);
+[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,lcanais,cell_acel,cell_cmd_plot);
 
