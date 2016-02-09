@@ -128,7 +128,7 @@ else if tipoclass=='LDA',
         Gr=param2;
         XY=[];
         for canal=1:lcanais
-            v_canal=Yt_final(canal)
+            v_canal=Yt_final(canal);
             XY=[XY v_canal];
         end
         [C,err,P,logp,coeff]=classify(XY,Tr,Gr,'linear');

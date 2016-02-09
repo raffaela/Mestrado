@@ -105,7 +105,7 @@ for icoleta=1:2,
              end
          end
          cores=['-r','-b','-g'];
-         vx=[r_Yt(floor(pos_mov(1:num_contr)./N))] %considera somente 5 pimeiras contracoes
+         vx=[r_Yt(floor(pos_mov(1:num_contr)./N))]; %considera somente 5 pimeiras contracoes
          fmean(icoleta)=median(vx);    
          lambda=fmean*(gl-2)-gl;
 
@@ -124,6 +124,8 @@ for icoleta=1:2,
                end
          else
              if tipoclass=='FDA',
+                 Tr_atual=[];
+                 Gr_atual=[];
                  r_Yt1=[];
                  r_Yt2=[];
                  r_Yt3=[];
@@ -137,9 +139,9 @@ for icoleta=1:2,
      if tipoclass=='LDA'|tipoclass=='FDA',
          Tr=[Tr; Tr_atual];
          if icoleta==1,  
-            Gr_atual=repmat({'extensao'},length(Tr_atual),1);
+            Gr_atual=repmat({'extensao'},size(Tr_atual,1),1);
          else
-            Gr_atual=repmat({'flexao'},length(Tr_atual),1);
+            Gr_atual=repmat({'flexao'},size(Tr_atual,1),1);
          end
          Gr=[Gr;Gr_atual];
      end
@@ -159,9 +161,9 @@ if tipoclass=='TFE',
      a2=fmean(2);
      k=exp((0.5+2/gl)*log(a2/a1));
     lim=(a1*k-a2)/(1-k)
-    hold on
-    plot([lim],xfdist(floor(lim/0.1)),'ks','MarkerFaceColor','g');
-    legend ('Extensao','Flexao','Limiar');  
+%     hold on
+%     plot([lim],xfdist(floor(lim/0.1)),'ks','MarkerFaceColor','g');
+%     legend ('Extensao','Flexao','Limiar');  
     if a1>a2,
         maior=1;
     else
