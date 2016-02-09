@@ -1,4 +1,4 @@
-function [cell_cmd_plot]=mainEMG_todos(canais_reais,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet)
+function [cell_cmd_plot]=mainEMG_todos(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet)
     %canais_reais:canais que deseja pesquisar
     %canal_ext:canal a ser considerado principal para movimento de extensao
     %canal_flex: canal a ser considerado principal para movimento de flexao
@@ -6,19 +6,15 @@ function [cell_cmd_plot]=mainEMG_todos(canais_reais,canal_ext,canal_flex,cell_si
     %% inicializa variaveis
     N=200; %numero de amostras(pontos) por trecho.
     M=5; %numero de trechos a serem utilizados para o calculo da TFE.
-%     frinicial=7;%18
-%     frfinal=12;%25
-%     frinicial2=18;%7
-%     frfinal2=25;%12
     fs=2000;  %frequencia de amostragem
     res_esp=fs/N;
-    frinicial=30/res_esp;%18
-    frfinal=50/res_esp;%25
+    frinicial=70/res_esp;%18
+    frfinal=110/res_esp;%25
     ndet_min=2; %minimo de janelas seguidas indicando ativacao muscular no musculo agonista para que a classificacao se confirme
-    lcanais=length(canais_reais);
+    lcanais=length(canais_avaliar);
     %% chama funcao de treinamento
    
-    [limiar_TFE,param1,param2]=trainingEMG(fs,canais_reais,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet);
+    [limiar_TFE,param1,param2]=trainingEMG(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet);
     %Para TFE: param1=limiar,param2=maior
     %Para LDA: param1=Tr, param2=Gr
 
@@ -34,7 +30,7 @@ function [cell_cmd_plot]=mainEMG_todos(canais_reais,canal_ext,canal_flex,cell_si
            canal_teste=canal_ext;
         else canal_teste=canal_flex;
         end
-        sinais=cell_sinais{1,isinal+2};
+        sinais=cell_sinais{isinal+2}(canais_avaliar,:);
         %% inicializa variaveis de classificacao
         cmd_final=[zeros(1,N*(2*M-1))];%amostras iniciais não podem ser classificadas, portanto recebem 0.
         cmd_plot=[zeros(1,2*M-1)];%janelas iniciais não podem ser classificadas, portanto recebem 0.

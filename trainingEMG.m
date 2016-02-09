@@ -1,10 +1,10 @@
-function [limiar_TFE,param1,param2]=trainingEMG(fs,canais_reais,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet)
+function [limiar_TFE,param1,param2]=trainingEMG(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet)
 
 
-ncanais_dados=3;
-canal_ac=1+ncanais_dados;
-canais=canais_reais+ncanais_dados*ones(1,length(canais_reais));  
-lcanais=length(canais_reais)
+% ncanais_dados=3;
+% canal_ac=1+ncanais_dados;
+% canais=canais_reais+ncanais_dados*ones(1,length(canais_reais));  
+lcanais=length(canais_avaliar)
 
 msg={'Abra o arquivo correspondente ao movimento de extens�o','Abra o arquivo correspondente ao movimento de flexao','Abra o arquivo correspondente ao repouso'};
 
@@ -25,7 +25,7 @@ for icoleta=1:2,
      ax=[];
      Yt_final=[];
      
-     sinais=cell_sinais{icoleta};
+     sinais=cell_sinais{icoleta}(canais_avaliar,:);
     
     %% separacao do trecho em que houve o movinento, atraves do sinal do
       %acelerometro.

@@ -1,13 +1,13 @@
 clear all
 close all
 dados=[];
-canais_reais=[4 7];
+canais_load=[2 3 4 8 6 7];
 fs=2000;
 N=200;
-lcanais=length(canais_reais);
+lcanais=length(canais_load);
 ncanais_dados=3;
 canal_ac=1+ncanais_dados;
-canais=canais_reais+ncanais_dados*ones(1,length(canais_reais));
+canais=canais_load+ncanais_dados*ones(1,length(canais_load));
 carregasinais=['treinamento extensao','treinamento flexao','teste extensao','teste flexao']
 cell_sinais=cell(1,4); %sinais necessarios a analise serao reunidos em uma celula.
 cell_acel=cell(1,4);
@@ -51,11 +51,12 @@ for i=1:4
    
 end
 
+canais_avaliar=[1 4]
 canal_ext=1;
 canal_flex=2;
 tipoclass='TFE';
 tipodet='v1';
 
-[cell_cmd_plot]=mainEMG(canais_reais,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
-[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,lcanais,cell_acel,cell_cmd_plot);
+[cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
+[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,cell_acel,cell_cmd_plot);
 

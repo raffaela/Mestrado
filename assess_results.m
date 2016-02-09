@@ -1,4 +1,4 @@
-function [prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,lcanais,cell_acel,cell_cmd_plot)
+function [prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,cell_acel,cell_cmd_plot)
 %métricas de resultados do detector
 prec_ext=0;
 sens_ext=0;
@@ -112,9 +112,12 @@ overall_acc=(num_vp_win(1)+num_vp_win(2)+total_vp_rep)/(num_v_win(1)+num_v_win(2
 
 %% salva resultados em arquivo .mat e .xlsxl
 dir_resultado='C:\Users\rafaelacunha\Dropbox\processamento_dissertacao\resultados';
-arq_resultado_mat=strcat(voluntario,'_',tipoclass,'_',tipodet,'_',int2str(lcanais),'_resultado.mat');
+arq_resultado_mat=strcat(voluntario,'_',tipoclass,'_',tipodet,'_',int2str(canais_avaliar),'_resultado_teste3.mat');
 path_resultado_mat=fullfile(dir_resultado,arq_resultado_mat);
 save(char(path_resultado_mat),'prec_ext','sens_ext','prec_flex','sens_flex','esp_ext','esp_flex','overall_acc');
+resultados=[sens_ext; sens_flex; esp_ext; esp_flex; prec_ext; prec_flex; overall_acc];
+arq_resultado_xlsx='resultados.xlsx';
+writevar(resultados,3,arq_resultado_xlsx);
 % T = table(prec_ext,sens_ext,prec_flex,sens_flex,esp_ext,esp_flex,overall_acc);
 % writetable(T,filename,'Sheet',1,'Range','D1')
 %%    
