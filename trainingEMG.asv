@@ -173,6 +173,7 @@ if tipoclass=='TFE',
 else if tipoclass=='LDA'|tipoclass=='FDA',
          grupo=size(Gr);
          trein=size(Tr);
+
         param1=Tr;
         param2=Gr;
     end
