@@ -12,9 +12,13 @@ function [cell_cmd_plot]=mainEMG_todos(canais_avaliar,canal_ext,canal_flex,cell_
     frfinal=110/res_esp;%25
     ndet_min=2; %minimo de janelas seguidas indicando ativacao muscular no musculo agonista para que a classificacao se confirme
     lcanais=length(canais_avaliar);
+    lim_det=[];
     %% chama funcao de treinamento
-   
-    [limiar_TFE,param1,param2]=trainingEMG(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet);
+   if tipodet=='TFE',
+        [param1,param2]=trainingEMG(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet);
+   else 
+       [param1,param2,lim_det]=trainingEMG(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet);
+   end
     %Para TFE: param1=limiar,param2=maior
     %Para LDA: param1=Tr, param2=Gr
 
@@ -34,18 +38,15 @@ function [cell_cmd_plot]=mainEMG_todos(canais_avaliar,canal_ext,canal_flex,cell_
         %% inicializa variaveis de classificacao
         cmd_final=[zeros(1,N*(2*M-1))];%amostras iniciais não podem ser classificadas, portanto recebem 0.
         cmd_plot=[zeros(1,2*M-1)];%janelas iniciais não podem ser classificadas, portanto recebem 0.
-        TFEt_final=[];
-        %r_Yt_final=[];
-        Yt_final=[zeros(lcanais,2*M-1)];
-        ffts=[];
+        v_det_final=[];
+
         %% realiza a classificacao janela a janela (cada uma com N amostras)
         for i=P+1:N:length(sinais),
-            [TFEt,comando,Yt,Sf]=onlineEMG(fs,sinais(:,i-P:i-1),frinicial,frfinal,limiar_TFE,param1,param2,M,N,tipoclass);
-
-            TFEt_final=[TFEt_final TFEt];
+            [v_det,comando]=onlineEMG(fs,sinais(:,i-P:i-1),frinicial,frfinal,param1,param2,M,N,tipoclass,tipodet,lim_det);
+            v_det_final=[v_det_final v_det];
             cmd=0;
-            if size(TFEt_final,2)>=8,
-               if ((TFEt_final(canal_ext,end-(ndet_min-1):end)==v_ndet_min & comando==1) |(TFEt_final(canal_flex,end-(ndet_min-1):end)==v_ndet_min & comando==2)),
+            if size(v_det_final,2)>=8,
+               if ((v_det_final(canal_ext,end-(ndet_min-1):end)==v_ndet_min & comando==1) |(v_det_final(canal_flex,end-(ndet_min-1):end)==v_ndet_min & comando==2)),
                    cmd=comando;
                     else if (cmd_plot(end-1)==1 || cmd_plot(end-1)==2),
                        cmd=-1; %desativação muscular
@@ -54,9 +55,6 @@ function [cell_cmd_plot]=mainEMG_todos(canais_avaliar,canal_ext,canal_flex,cell_
             end
             cmd_final=[cmd_final cmd*ones(1,N)];
             cmd_plot=[cmd_plot cmd];
-            ffts=[ffts Sf];
-            %r_Yt_final=[r_Yt_final r_Yt];
-            Yt_final=[Yt_final Yt];
         end
 
         %% Reune os resultados da analise offline para serem visualizados/analisados

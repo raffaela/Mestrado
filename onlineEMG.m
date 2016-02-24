@@ -1,4 +1,4 @@
-function [TFEt,comando,Yt_final,Sf]= onlineEMG(fs,sinais,frinicial,frfinal,limiar_TFE,param1,param2,M,N,tipoclass)
+function [v_det,comando]= onlineEMG(fs,sinais,frinicial,frfinal,param1,param2,M,N,tipoclass,tipodet,lim_det)
 %comando:0=repouso;1=extensao;2=flexao
     lcanais=size(sinais,1);
     fmean=[];
@@ -9,29 +9,20 @@ function [TFEt,comando,Yt_final,Sf]= onlineEMG(fs,sinais,frinicial,frfinal,limia
         %% Preparacao para aplicacao do teste F espectral no EMG
        
         tam=length(sinais);
-        resf=(fs)/(tam); % resolucao espectral (considerando as bandas de frequencia)
-        frsinais=[0:resf:resf*(tam-1)];  %vetor de frequencias de acordo com a resf.
-   
-       
         E=M*2; %numero total de trechos 
         vt=0:1/fs:(length(sinais)-1)/fs;
         s=[];
         Sf=[];
-        for canal=1:lcanais
-            s=reshape(sinais(canal,:),N,E);  %sinal transformado em matriz com cada coluna correspondendo a um trecho e cada linha correspondendo a uma amostra (ponto) do sinal.
-            Sf_canal=fft(s);
-            Sf=[Sf; Sf_canal];
-        end   
-       
-        nbins=frfinal-frinicial+1;
-        %nbins=(frfinal-frinicial)+1+(frfinal2-frinicial2)+1; %numero de amostras (pontos) de frequencia a serem "unificados" em uma banda.
-
-        % Vetor de frequencias
-        resf=(fs*nbins)/(N); % resolucao espectral (considerando as bandas de frequencia)
-        fr=[0:resf:resf*(N/(2*nbins)-1)];  %vetor de frequencias de acordo com a resf.
-        TFE=[];
-        ifaixa=[];
       
+            for canal=1:lcanais
+                s=reshape(sinais(canal,:),N,E);  %sinal transformado em matriz com cada coluna correspondendo a um trecho e cada linha correspondendo a uma amostra (ponto) do sinal.
+                Sf_canal=fft(s);
+                Sf=[Sf; Sf_canal];
+            end   
+         nbins=frfinal-frinicial+1;
+        %nbins=(frfinal-frinicial)+1+(frfinal2-frinicial2)+1; %numero de amostras (pontos) de frequencia a serem "unificados" em uma banda.
+        % Vetor de frequencias
+        TFE=[];
         %% calculo do TFE para cada canal
         Yt_final=[];
         Xt_final=[];
@@ -48,11 +39,12 @@ function [TFEt,comando,Yt_final,Sf]= onlineEMG(fs,sinais,frinicial,frfinal,limia
             Yt_final=[Yt_final;Yt];
             Xt_final=[Xt_final;Xt];
 
-        end
-  
+         end
+        
+        if tipodet=='TFE',
             TFE=Yt_final./Xt_final;
         %end
-        
+       
         %Calcula valor critico (de acordo com a distribuicao F teorica)
         gl=2*M*nbins*lcanais/2;
         vcrit_s=finv(0.95,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
@@ -63,19 +55,19 @@ function [TFEt,comando,Yt_final,Sf]= onlineEMG(fs,sinais,frinicial,frfinal,limia
         TFEt=[];
         
         Nfloor=floor(N/nbins);
-      
+     end 
      for canal=1:lcanais,
          
-         if isempty(limiar_TFE)==0,%utiliza limiar pelo desvio padrao da media dos trechos em repouso(versao 2)
-              if 0<canal<5,
-                coleta=1;
-              else if 5<canal<9,
-                        coleta=2;
-                  end
-              end
-              vcrit_s=limiar_TFE(coleta,canal),
-         end
-            %TFE(ifaixa,l)
+%          if isempty(limiar_TFE)==0,%utiliza limiar pelo desvio padrao da media dos trechos em repouso(versao 2)
+%               if 0<canal<5,
+%                 coleta=1;
+%               else if 5<canal<9,
+%                         coleta=2;
+%                   end
+%               end
+%               vcrit_s=limiar_TFE(coleta,canal),
+%          end
+        if tipodet=='TFE',
           if TFE(canal)>vcrit_s,
               TFEt(canal)=1;
          else if TFE(canal)<vcrit_i,
@@ -83,9 +75,26 @@ function [TFEt,comando,Yt_final,Sf]= onlineEMG(fs,sinais,frinicial,frfinal,limia
               else TFEt(canal)=0;
               end
           end  
-      end
-TFEt=TFEt';
-
+        end  
+          if tipodet=='RMS',
+             rms = sqrt(mean(sinais(canal,end-N:end).^2));
+             if rms>lim_det(canal),
+                  RMSt(canal)=1;
+             else if rms<=lim_det(canal),
+                   RMSt(canal)=0;
+                 end 
+             end
+          end
+     if tipodet=='TFE',
+          v_det=TFEt';
+     else if tipodet=='RMS',
+             v_det=RMSt';
+          end
+     end
+    
+     end
+     
+        
 
 %% determina a razão r_Yt de acordo com o número de canais considerados
 canal_ext1=1;

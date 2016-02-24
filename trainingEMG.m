@@ -1,9 +1,8 @@
-function [limiar_TFE,param1,param2]=trainingEMG(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet)
+function [param1,param2,lim_det]=trainingEMG(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet)
 
-
-% ncanais_dados=3;
-% canal_ac=1+ncanais_dados;
-% canais=canais_reais+ncanais_dados*ones(1,length(canais_reais));  
+if nargout>2,
+    lim_det=[];
+end
 lcanais=length(canais_avaliar)
 
 msg={'Abra o arquivo correspondente ao movimento de extens�o','Abra o arquivo correspondente ao movimento de flexao','Abra o arquivo correspondente ao repouso'};
@@ -16,10 +15,10 @@ meanfreq=mean(mfreq);
 Gr=[];
 Tr=[];
 
-if tipodet=='v2',
-    limiar_TFE=ones(2,lcanais)*1000; %ser definido um limiar para cada canal para cada coleta.
-else limiar_TFE=[];
-end
+% if tipodet=='v2',
+%     limiar_TFE=ones(2,lcanais)*1000; %ser definido um limiar para cada canal para cada coleta.
+% else limiar_TFE=[];
+% end
       
 for icoleta=1:2,
      ax=[];
@@ -43,15 +42,11 @@ for icoleta=1:2,
         sinal=sinal_filtrado(1:N*E);
         vt=0:1/fs:(length(sinal)-1)/fs;
         sinal=reshape(sinal,N,E);  %sinal transformado em matriz com cada coluna correspondendo a um trecho e cada linha correspondendo a uma amostra (ponto) do sinal.
-        Sf=fft(sinal); % Calculo do espectro do sinal para cada trecho (coluna).
-
-        nbins=frfinal-frinicial+1;
-        %nbins=(frfinal-frinicial)+1+(frfinal2-frinicial2)+1;
-        % Vetor de frequencias
-        resf=(fs*nbins)/(N); % resolucao espectral (considerando as bandas de frequencia)
-        fr=[0:resf:resf*(N/(2*nbins)-1)];  %vetor de frequencias de acordo com a resf.
-            
+        
+       
+         Sf=fft(sinal); % Calculo do espectro do sinal para cada trecho (coluna).
        %% calculo do TFE
+        nbins=frfinal-frinicial+1;
         TFE=[];
         Yt_f=[];
          for l=2*M:E,
@@ -66,30 +61,40 @@ for icoleta=1:2,
             TFE(1,l-2*M+1)=Yt./Xt; % cada coluna desta matriz corresponde a TFE calculada para um conjunto de trechos diferentes de y[k].   
             Yt_f(1,l-2*M+1)=Yt;
          end
+           rep2=zeros(1,2*M-1); %janelas iniciais nao tem valor do Yt atribuido e portanto recebem 0.
+           Yt_final(icanal,:)=[rep2 Yt_f];
+           gl=2*M*nbins*lcanais/2;
         
         %% Calcula valor critico (de acordo com a distribuicao F teorica)
-        gl=2*M*nbins*lcanais/2;
-        vcrit_s=finv(0.95,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
-        vcrit_i=finv(0.05,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
-        if tipodet=='v2',
-                for l=0:length(TFE)-1
-                    TFEt(l*N+1:l*N+N)=TFE(l+1);
-                end
-                rep=zeros(1,2*M*N-N); %amostras iniciais nao tem valor do TFE atribuido e portanto recebem 100(valor alto para nao influenciar o minimo).
-                TFEt_final=[rep TFEt];
-                TFEt_rel=TFEt_final;
-                for icontr=length(pos_mov):-1:1,
-                    if pos_rel(icontr)+1000<=length(TFEt_final),
-                        TFEt_rel=setdiff(TFEt_rel,TFEt_final(pos_mov(icontr)-2000:pos_rel(icontr)+1000));           
-                    else 
-                        TFEt_rel=setdiff(TFEt_rel,TFEt_final(pos_mov(icontr)-2000:end));           
-                    end
-                end
-                limiar_TFE(icoleta,icanal)=mean(TFEt_rel)+2*std(TFEt_rel);
+        if tipodet=='TFE',
+            vcrit_s=finv(0.95,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
+            vcrit_i=finv(0.05,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
         end
-        rep2=zeros(1,2*M-1); %janelas iniciais nao tem valor do Yt atribuido e portanto recebem 0.
-        Yt_final(icanal,:)=[rep2 Yt_f];
-
+        if tipodet=='RMS',
+            rms = sqrt(mean(sinal.^2));
+            [n1,xout] = hist(rms(1:floor(pos_mov(1,1)/N)),0:1e-006:(max(rms)));  
+            u=3;
+            v_lim_det(icoleta,icanal) = xout(find(n1==max(n1))+u);
+        end
+%         if tipodet=='v2',
+%                 for l=0:length(TFE)-1
+%                     TFEt(l*N+1:l*N+N)=TFE(l+1);
+%                 end
+%                 rep=zeros(1,2*M*N-N); %amostras iniciais nao tem valor do TFE atribuido e portanto recebem 100(valor alto para nao influenciar o minimo).
+%                 TFEt_final=[rep TFEt];
+%                 TFEt_rel=TFEt_final;
+%                 for icontr=length(pos_mov):-1:1,
+%                     if pos_rel(icontr)+1000<=length(TFEt_final),
+%                         TFEt_rel=setdiff(TFEt_rel,TFEt_final(pos_mov(icontr)-2000:pos_rel(icontr)+1000));           
+%                     else 
+%                         TFEt_rel=setdiff(TFEt_rel,TFEt_final(pos_mov(icontr)-2000:end));           
+%                     end
+%                 end
+%                 limiar_TFE(icoleta,icanal)=mean(TFEt_rel)+2*std(TFEt_rel);
+%         end
+     end
+     if tipodet=='RMS',
+        lim_det=mean(v_lim_det);
      end
      %faz a estimativa das distribuicoes para o dado movimento de acordo
      %com a razao entre os canais.    
@@ -108,7 +113,6 @@ for icoleta=1:2,
          vx=[r_Yt(floor(pos_mov(1:num_contr)./N))]; %considera somente 5 pimeiras contracoes
          fmean(icoleta)=median(vx);    
          lambda=fmean*(gl-2)-gl;
-
          x=0:0.1:12000.01;
          xfdist=fpdf(x,gl,gl)/fmean(icoleta);
          ay(icoleta)=subplot(1,1,1);
