@@ -14,7 +14,7 @@ cell_acel=cell(1,4);
 num_mov=[];
 for i=1:4
     mensagem=strcat('Abra o arquivo de ',carregasinais(i))
-    [Arq,PATH]=uigetfile('*.mat',mensagem);
+    [Arq,PATH]=uigetfile('*.mat',mensagem,'C:\Users\rafaelacunha\Dropbox\processamento_dissertacao\coletas_mat_pacientes');
     if Arq==0,
         sinais = [];      %retorna vazio caso abertura seja cancelada
         %return;
@@ -63,7 +63,7 @@ tipos_classes={'TFE','LDA'};
 cell_canais_avaliar_duplos={[1 4],[2 5],[3 6]};
 
 %% avaliacao de duplas de canais para TFE e LDA
-tipodet='RMS';%TFE ou RMS 
+tipodet='TFE';%TFE ou RMS 
 canal_ext=1;
 canal_flex=2;
 coluna_excel=2;
@@ -85,7 +85,7 @@ canal_ext=1;
 canal_flex=3;
 tipoclass='LDA';
 [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
-[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
+%[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
 
 coluna_excel=coluna_excel+1;
 canais_avaliar=[1 2 3 4 5 6]
@@ -93,7 +93,7 @@ canal_ext=1;
 canal_flex=4;
 tipoclass='LDA';
 [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
-[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
+%[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
 
 coluna_excel=coluna_excel+1;
 canais_avaliar=[1 2 3 4 5 6]
@@ -101,6 +101,6 @@ canal_ext=1;
 canal_flex=4;
 tipoclass='FDA';
 [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
-[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
+%[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
 
 

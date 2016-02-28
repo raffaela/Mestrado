@@ -3,7 +3,7 @@ clear all
 close all
     canal_ac=4;
     fs=2000;
-    [dados,nomeArq]=AbreSinalPEB2_msg('Abra o arquivo desejado');
+    [dados,nomeArq]=AbreSinalPEB2_msg('Abra o arquivo desejado','C:\Users\rafaelacunha\Dropbox\processamento_dissertacao');
     sinais=dados.ARQdig(4:end,:);
      fs=2000;
      sinais=sinais';
@@ -28,7 +28,7 @@ close all
         %filtra todos canais dos aceleromeros
         [b,a] = butter(2,10*2/fs,'low');
         sinal_ac = filtfilt(b,a,sinal_ac);
-        [b,a] = butter(2,0.001*2/fs,'high');
+        [b,a] = butter(2,0.01*2/fs,'high');
         sinal_ac = filtfilt(b,a,sinal_ac);
         t=0:1/fs:(size(sinais,2)-1)/fs;
         sinais=[sinal_ac;sinais];
@@ -64,7 +64,7 @@ close all
     nomeArq_split=strsplit(nomeArq,'.');
     nomeArq=strcat(nomeArq_split(1),'_completo.mat');
     nomeArq_split2=strsplit(char(nomeArq),'\');
-    path='C:\Users\rafaelacunha\Dropbox\processamento_dissertacao\coletas_mat'
+    path='C:\Users\rafaelacunha\Dropbox\processamento_dissertacao\coletas_mat_pacientes'
     nomeArq=fullfile(path,nomeArq_split2(end));
     save(char(nomeArq),'dados');
     

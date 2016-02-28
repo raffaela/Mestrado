@@ -1,4 +1,4 @@
-function [param1,param2,lim_det]=trainingEMG(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet)
+function [param1,param2,lim_det]=trainingEMG(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet,path_fig,voluntario)
 
 if nargout>2,
     lim_det=[];
@@ -19,6 +19,7 @@ Tr=[];
 %     limiar_TFE=ones(2,lcanais)*1000; %ser definido um limiar para cada canal para cada coleta.
 % else limiar_TFE=[];
 % end
+figura=figure;
       
 for icoleta=1:2,
      ax=[];
@@ -157,9 +158,10 @@ if tipoclass=='TFE',
     axis([0,500, 0, 1]);
     xlabel('x','FontSize',14);
     ylabel('p(x)','FontSize',14);
-    title('Distribui��es','FontSize',14);
+    title('Distribuicoes','FontSize',14);
     set(gca,'FontSize',14);
-
+    nome_fig=strcat(voluntario,'_',tipoclass,'_',tipodet,'_',int2str(canais_avaliar),'_distrib');
+    saveas(figura,char(fullfile(path_fig,nome_fig)),'fig');
     %% calcula parametros de classificacao (limiar e maior)
      a1=fmean(1);
      a2=fmean(2);
@@ -179,6 +181,12 @@ if tipoclass=='TFE',
 else if tipoclass=='LDA'|tipoclass=='FDA',
          grupo=size(Gr);
          trein=size(Tr);
+         if lcanais==2,
+             figura=figure;
+             plotaLDA(Tr,Gr);
+             nome_fig=strcat(voluntario,'_',tipoclass,'_',tipodet,'_',int2str(canais_avaliar),'_LDAclass');
+             saveas(figura,char(fullfile(path_fig,nome_fig)),'fig');
+         end
         param1=Tr;
         param2=Gr;
     end

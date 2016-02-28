@@ -2,7 +2,7 @@ function [cell_cmd_plot]=mainEMG_todos(canais_avaliar,canal_ext,canal_flex,cell_
     %canais_reais:canais que deseja pesquisar
     %canal_ext:canal a ser considerado principal para movimento de extensao
     %canal_flex: canal a ser considerado principal para movimento de flexao
-
+    path_fig='C:\Users\rafaelacunha\Dropbox\processamento_dissertacao\figuras';
     %% inicializa variaveis
     N=200; %numero de amostras(pontos) por trecho.
     M=5; %numero de trechos a serem utilizados para o calculo da TFE.
@@ -15,9 +15,9 @@ function [cell_cmd_plot]=mainEMG_todos(canais_avaliar,canal_ext,canal_flex,cell_
     lim_det=[];
     %% chama funcao de treinamento
    if tipodet=='TFE',
-        [param1,param2]=trainingEMG(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet);
+        [param1,param2]=trainingEMG(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet,path_fig,voluntario);
    else 
-       [param1,param2,lim_det]=trainingEMG(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet);
+       [param1,param2,lim_det]=trainingEMG(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet,voluntario);
    end
     %Para TFE: param1=limiar,param2=maior
     %Para LDA: param1=Tr, param2=Gr
@@ -68,7 +68,7 @@ function [cell_cmd_plot]=mainEMG_todos(canais_avaliar,canal_ext,canal_flex,cell_
         pos_ext=find(cmd_plot==1)*N-(N-1);
         pos_desativ=find(cmd_plot==-1)*N-(N-1);
         vetor0=zeros(1,length(sinais));
-        figure;
+        figura=figure;
         plot(vt,sinais(canal_teste,:),'-b');
         hold on
         plot(pos_flex/fs,vetor0(pos_flex),'ks','MarkerFaceColor','r');
@@ -77,18 +77,24 @@ function [cell_cmd_plot]=mainEMG_todos(canais_avaliar,canal_ext,canal_flex,cell_
         hold on
         plot(pos_desativ/fs,vetor0(pos_desativ),'ks','MarkerFaceColor','y');
         if isempty(pos_ext)==1,
-            legend('Sinal EMG','Flex�o','Relaxamento')
+            legend('Sinal EMG','Flexao','Relaxamento')
         else if isempty(pos_flex)==1,
-                legend('Sinal EMG','Extens�o','Relaxamento')
+                legend('Sinal EMG','Extensao','Relaxamento')
             else if isempty(pos_desativ)==1,
-                legend('Sinal EMG','Flex�o','Extens�o')
-                else  legend('Sinal EMG','Flex�o','Extens�o','Relaxamento')
+                legend('Sinal EMG','Flexao','Extensao')
+                else  legend('Sinal EMG','Flexao','Extensao','Relaxamento')
                 end
             end
         end
         xlabel('Tempo[s]','FontSize',14)
         ylabel('Amplitude [V]','FontSize',14)
         set(gca,'FontSize',14)
+        if isinal==1,
+            str_mov='ext'
+        else str_mov='flex';
+        end
+        nome_fig=strcat(voluntario,'_',tipoclass,'_',tipodet,'_',int2str(canais_avaliar),'_',str_mov);
+        saveas(figura,char(fullfile(path_fig,nome_fig)),'fig');
         vetor_teste=canal_teste*ones(1,5);
     end
 end
