@@ -47,8 +47,8 @@ function [v_det,comando]= onlineEMG(fs,sinais,frinicial,frfinal,param1,param2,M,
        
         %Calcula valor critico (de acordo com a distribuicao F teorica)
         gl=2*M*nbins*lcanais/2;
-        vcrit_s=finv(0.95,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
-        vcrit_i=finv(0.05,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins  
+        vcrit_s=finv(0.99,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
+        vcrit_i=finv(0.01,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins  
         % for l=1:E-(2*M)+1,
         
         nivel=0;

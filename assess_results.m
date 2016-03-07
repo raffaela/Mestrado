@@ -114,9 +114,9 @@ overall_acc=(num_vp_win(1)+num_vp_win(2)+total_vp_rep)/(num_v_win(1)+num_v_win(2
 dir_resultado='C:\Users\rafaelacunha\Dropbox\processamento_dissertacao\resultados';
 arq_resultado_mat=strcat(voluntario,'_',tipoclass,'_',tipodet,'_',int2str(canais_avaliar),'_resultado_teste3.mat');
 path_resultado_mat=fullfile(dir_resultado,arq_resultado_mat);
-save(char(path_resultado_mat),'prec_ext','sens_ext','prec_flex','sens_flex','esp_ext','esp_flex','overall_acc');
+% save(char(path_resultado_mat),'prec_ext','sens_ext','prec_flex','sens_flex','esp_ext','esp_flex','overall_acc');
 resultados=[sens_ext; sens_flex; esp_ext; esp_flex; prec_ext; prec_flex; overall_acc];
-arq_resultado_xlsx='resumo_resultados_novo.xlsx';
+arq_resultado_xlsx='resumo_resultados_pacientes_testes3.xlsx';
 sheet=voluntario;
 writevar(resultados,col_excel,arq_resultado_xlsx,sheet);
 % T = table(prec_ext,sens_ext,prec_flex,sens_flex,esp_ext,esp_flex,overall_acc);

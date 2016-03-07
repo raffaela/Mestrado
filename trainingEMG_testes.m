@@ -1,9 +1,9 @@
-function [param1,param2,lim_det]=trainingEMG(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet,path_fig,voluntario)
+function [param1,param2,TFE_final,lim_det]=trainingEMG_testes(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,cell_sinal_ac,tipoclass,tipodet,path_fig,voluntario)
 
-if nargout>2,
+if nargout>3,
     lim_det=[];
 end
-lcanais=length(canais_avaliar)
+lcanais=length(canais_avaliar);
 
 msg={'Abra o arquivo correspondente ao movimento de extens�o','Abra o arquivo correspondente ao movimento de flexao','Abra o arquivo correspondente ao repouso'};
 
@@ -19,7 +19,7 @@ Tr=[];
 %     limiar_TFE=ones(2,lcanais)*1000; %ser definido um limiar para cada canal para cada coleta.
 % else limiar_TFE=[];
 % end
-figura=figure;
+% figura=figure;
       
 for icoleta=1:2,
      ax=[];
@@ -35,14 +35,17 @@ for icoleta=1:2,
      pos_mov=movimento(icoleta).pos_mov;
      pos_rel=movimento(icoleta).pos_rel;
      num_contr=length(pos_mov);
-       
+     sinal_acel=cell_sinal_ac{1,icoleta};
+     E=floor(length(sinal_acel)/N);
+     sinal_acel=sinal_acel(1:N*E);
+      vt=0:1/fs:(length(sinal_acel)-1)/fs
+ 
      for icanal=1:lcanais,
         sinal_filtrado=sinais(icanal,:);
         t=0:1/fs:(length(sinal_filtrado)-1)/fs;
         E=floor(length(sinal_filtrado)/N); %numero total de trechos no sinal inteiro.
-        sinal=sinal_filtrado(1:N*E);
-        vt=0:1/fs:(length(sinal)-1)/fs;
-        sinal=reshape(sinal,N,E);  %sinal transformado em matriz com cada coluna correspondendo a um trecho e cada linha correspondendo a uma amostra (ponto) do sinal.
+        sinal_cut=sinal_filtrado(1:N*E);    
+        sinal=reshape(sinal_cut,N,E);  %sinal transformado em matriz com cada coluna correspondendo a um trecho e cada linha correspondendo a uma amostra (ponto) do sinal.
         
        
          Sf=fft(sinal); % Calculo do espectro do sinal para cada trecho (coluna).
@@ -62,17 +65,34 @@ for icoleta=1:2,
             TFE(1,l-2*M+1)=Yt./Xt; % cada coluna desta matriz corresponde a TFE calculada para um conjunto de trechos diferentes de y[k].   
             Yt_f(1,l-2*M+1)=Yt;
          end
-           rep2=zeros(1,2*M-1); %janelas iniciais nao tem valor do Yt atribuido e portanto recebem 0.
+         
+           rep2=zeros(1,2*M); %janelas iniciais nao tem valor do Yt atribuido e portanto recebem 0.
            Yt_final(icanal,:)=[rep2 Yt_f];
            gl=2*M*nbins*lcanais/2;
+           %rep=zeros(1,2*M*N-N); %amostras iniciais nao tem valor do TFE atribuido e portanto recebem 0.
+           TFE_final=[rep2 TFE];
+           t_TFE=0:N/fs:(length(TFE_final)-1)*N/fs
         
-        %% Calcula valor critico (de acordo com a distribuicao F teorica)
+        
+  
+       
+           %% Calcula valor critico (de acordo com a distribuicao F teorica)
         if tipodet=='TFE',
-            vcrit_s=finv(0.95,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
-            vcrit_i=finv(0.05,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
+            vcrit_s=finv(0.99,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
+            vcrit_i=finv(0.01,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
+            figure
+            plot(t_TFE,TFE_final./max(TFE_final),'-m');
+            hold on
+            plot(vt,sinal_acel,'-k');
+            hold on
+            plot(vt,sinal_cut,'-b');
+            hold on
+            plot(vt,vcrit_s*ones(1,length(vt))./max(TFE_final),'-g');
+            hold on
+             plot(vt,vcrit_i*ones(1,length(vt))./max(TFE_final),'-r');
         end
         if tipodet=='RMS',
-            rms = sqrt(mean(sinal.^2));
+                rms = sqrt(mean(sinal.^2));
             [n1,xout] = hist(rms(1:floor(pos_mov(1,1)/N)),0:1e-006:(max(rms)));  
             u=3;
             v_lim_det(icoleta,icanal) = xout(find(n1==max(n1))+u);
@@ -94,6 +114,7 @@ for icoleta=1:2,
 %                 limiar_TFE(icoleta,icanal)=mean(TFEt_rel)+2*std(TFEt_rel);
 %         end
      end
+    
      if tipodet=='RMS',
         lim_det=mean(v_lim_det);
      end
@@ -111,36 +132,22 @@ for icoleta=1:2,
              end
          end
          cores=['-r','-b','-g'];
-         vx=[];
-         for k=1:length(pos_mov),
-             pos_win=floor(pos_mov(k)/N);
-             vx=[vx mean(r_Yt(pos_win:pos_win+2))];
-         end
-         %vx=[r_Yt(floor(pos_mov(1:num_contr)./N))+2]; %considera somente 5 pimeiras contracoes
+         vx=[r_Yt(floor(pos_mov(1:num_contr)./N))]; %considera somente 5 pimeiras contracoes
          fmean(icoleta)=median(vx);    
          lambda=fmean*(gl-2)-gl;
          x=0:0.1:12000.01;
          xfdist=fpdf(x,gl,gl)/fmean(icoleta);
          ay(icoleta)=subplot(1,1,1);
-         plot(x*fmean(icoleta),xfdist,cores(icoleta));
-         hold(ay(icoleta),'on')
-         set(gca,'FontSize',14);
+%          plot(x*fmean(icoleta),xfdist,cores(icoleta));
+%          hold(ay(icoleta),'on')
+%          set(gca,'FontSize',14);
      else
          if tipoclass=='LDA',
               Tr_atual=[];
               Gr_atual=[];
-               
-             for canal=1:lcanais, 
-                vx=[]; 
-                for k=1:length(pos_mov),
-                    pos_win=floor(pos_mov(k)/N);         
-                    vx=[vx mean(Yt_final(canal,pos_win:pos_win+2))];
-                end
-                    Tr_atual(:,canal)=vx;
-             end
-%                for canal=1:lcanais,
-%                     Tr_atual(:,canal)= Yt_final(canal,floor(pos_mov(1:num_contr)./N))';
-%                end
+               for canal=1:lcanais,
+                    Tr_atual(:,canal)= Yt_final(canal,floor(pos_mov(1:num_contr)./N))';
+               end
          else
              if tipoclass=='FDA',
                  Tr_atual=[];
@@ -164,19 +171,21 @@ for icoleta=1:2,
          end
          Gr=[Gr;Gr_atual];
      end
-        
+    
 end
+
+
 %% plota distribuicoes
 if tipoclass=='TFE',
-    legend('extensao','flexao')
-    axis([0,500, 0, 1]);
-    xlabel('x','FontSize',14);
-    ylabel('p(x)','FontSize',14);
-    title('Distribuicoes','FontSize',14);
-    set(gca,'FontSize',14);
+%     legend('extensao','flexao')
+%     axis([0,500, 0, 1]);
+%     xlabel('x','FontSize',14);
+%     ylabel('p(x)','FontSize',14);
+%     title('Distribuicoes','FontSize',14);
+%     set(gca,'FontSize',14);
     nome_fig=strcat(voluntario,'_',tipoclass,'_',tipodet,'_',int2str(canais_avaliar),'_distrib');
-    saveas(figura,char(fullfile(path_fig,nome_fig)),'fig');
-    %% calcula parametros de classificacao (limiar e maior)
+%     saveas(figura,char(fullfile(path_fig,nome_fig)),'fig');
+%     %% calcula parametros de classificacao (limiar e maior)
      a1=fmean(1);
      a2=fmean(2);
      k=exp((0.5+2/gl)*log(a2/a1));

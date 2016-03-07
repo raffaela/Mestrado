@@ -63,6 +63,8 @@ tipos_classes={'TFE','LDA'};
 cell_canais_avaliar_duplos={[1 4],[2 5],[3 6]};
 
 %% avaliacao de duplas de canais para TFE e LDA
+%set(0,'DefaultFigureVisible','on');
+
 tipodet='TFE';%TFE ou RMS 
 canal_ext=1;
 canal_flex=2;
@@ -73,7 +75,7 @@ for p=1:length(tipos_classes)
         canais_avaliar=cell_canais_avaliar_duplos{1,q};
          coluna_excel=coluna_excel+1;
         [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
-        %[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
+        [prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
     end
 end
 
@@ -85,7 +87,7 @@ canal_ext=1;
 canal_flex=3;
 tipoclass='LDA';
 [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
-%[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
+[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
 
 coluna_excel=coluna_excel+1;
 canais_avaliar=[1 2 3 4 5 6]
@@ -101,6 +103,6 @@ canal_ext=1;
 canal_flex=4;
 tipoclass='FDA';
 [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
-%[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
+[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
 
 

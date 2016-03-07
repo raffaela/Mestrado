@@ -1,6 +1,6 @@
 clear all
 close all
-canais_reais=[2 8];%canais nos quais será baseada a classificação
+canais_reais=[2 6];%canais nos quais será baseada a classificação
 ncanais_dados=3;
 canal_ac=1+ncanais_dados;
 canais=canais_reais+ncanais_dados*ones(1,length(canais_reais));
@@ -16,7 +16,7 @@ fs=2000;  %frequencia de amostragem
    NomeARQdig=[PATH,Arq];
     dados_arquivo=load(NomeARQdig);
     sinais=dados_arquivo.dados.ARQdig(canais,:);
-    sinal_ac=dados_arquivo.dados.ARQdig(canal_ac,:);
+    sinal_ac=dados_arquivo.dados.ARQdig(canal_ac,:)*(-1);
     
 
     %filtra todos canais dos aceleromeros
@@ -44,7 +44,7 @@ fs=2000;  %frequencia de amostragem
 
    sinais=sinais';
    
-   sinal_extensor=sinais(2,:);
+   sinal_extensor=sinais(1,:);
    
    pos_mov_teste=dados_arquivo.dados.acel.mov; 
    pos_rel_teste=dados_arquivo.dados.acel.rel;

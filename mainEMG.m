@@ -1,8 +1,8 @@
-function [cell_cmd_plot]=mainEMG_todos(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet)
+function [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet)
     %canais_reais:canais que deseja pesquisar
     %canal_ext:canal a ser considerado principal para movimento de extensao
     %canal_flex: canal a ser considerado principal para movimento de flexao
-    path_fig='C:\Users\rafaelacunha\Dropbox\processamento_dissertacao\figuras';
+    path_fig='C:\Users\rafaelacunha\Dropbox\processamento_dissertacao\figuras_teste3';
     %% inicializa variaveis
     N=200; %numero de amostras(pontos) por trecho.
     M=5; %numero de trechos a serem utilizados para o calculo da TFE.
@@ -33,7 +33,7 @@ function [cell_cmd_plot]=mainEMG_todos(canais_avaliar,canal_ext,canal_flex,cell_
         if isinal==1, %determina o canal de teste apenas para ser plotado
            canal_teste=canal_ext;
         else canal_teste=canal_flex;
-        end
+        end 
         sinais=cell_sinais{isinal+2}(canais_avaliar,:);
         %% inicializa variaveis de classificacao
         cmd_final=[zeros(1,N*(2*M-1))];%amostras iniciais não podem ser classificadas, portanto recebem 0.
@@ -68,6 +68,8 @@ function [cell_cmd_plot]=mainEMG_todos(canais_avaliar,canal_ext,canal_flex,cell_
         pos_ext=find(cmd_plot==1)*N-(N-1);
         pos_desativ=find(cmd_plot==-1)*N-(N-1);
         vetor0=zeros(1,length(sinais));
+        pos_mov=cell_acel{isinal+2}.mov;
+        pos_rel=cell_acel{isinal+2}.rel;
         figura=figure;
         plot(vt,sinais(canal_teste,:),'-b');
         hold on
@@ -76,6 +78,10 @@ function [cell_cmd_plot]=mainEMG_todos(canais_avaliar,canal_ext,canal_flex,cell_
         plot(pos_ext/fs,vetor0(pos_ext),'ks','MarkerFaceColor','g');
         hold on
         plot(pos_desativ/fs,vetor0(pos_desativ),'ks','MarkerFaceColor','y');
+        hold on
+        plot(pos_mov/fs,vetor0(pos_mov),'ko','MarkerFaceColor','m');
+        hold on
+        plot(pos_rel/fs,vetor0(pos_rel),'ko','MarkerFaceColor','g');
         if isempty(pos_ext)==1,
             legend('Sinal EMG','Flexao','Relaxamento')
         else if isempty(pos_flex)==1,

@@ -1,0 +1,5 @@
+novo_cursor=[];
+for n=length(cursor_info):-1:1
+    valor=cursor_info(n).DataIndex;
+    novo_cursor=[novo_cursor valor];
+end
