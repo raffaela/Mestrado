@@ -10,7 +10,7 @@ function [cell_cmd_plot]=mainEMG_testes(canais_avaliar,canal_ext,canal_flex,cell
     res_esp=fs/N;
     frinicial=70/res_esp;%18
     frfinal=110/res_esp;%25
-    ndet_min=2; %minimo de janelas seguidas indicando ativacao muscular no musculo agonista para que a classificacao se confirme
+    ndet_min=3; %minimo de janelas seguidas indicando ativacao muscular no musculo agonista para que a classificacao se confirme
     lcanais=length(canais_avaliar);
     lim_det=[];
     %% chama funcao de treinamento

@@ -117,9 +117,9 @@ acel_pi=acel_pid;
         %             end
         %         end
         if borda_tipo == 1,
-            [pi,p0,pb] = det_ini_borda_deriv_subida(acel_in,fs,limiar,0.0012,5,[80 80],1000);
+            [pi,p0,pb] = det_ini_borda_deriv_subida(acel_in,fs,limiar,0.0002,5,[80 80],1000);
         else
-            [pi,p0,pb] = det_ini_borda_deriv_descida(acel_in,fs,limiar,0.0012,5,[80 80],1000);
+            [pi,p0,pb] = det_ini_borda_deriv_descida(acel_in,fs,limiar,0.0002,5,[80 80],1000);
         end
     end
 

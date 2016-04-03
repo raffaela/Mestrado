@@ -5,6 +5,7 @@ if nargout>2,
 end
 lcanais=length(canais_avaliar)
 
+
 msg={'Abra o arquivo correspondente ao movimento de extens�o','Abra o arquivo correspondente ao movimento de flexao','Abra o arquivo correspondente ao repouso'};
 
 mfreq=zeros(2,2);
@@ -114,7 +115,7 @@ for icoleta=1:2,
          vx=[];
          for k=1:length(pos_mov),
              pos_win=floor(pos_mov(k)/N);
-             vx=[vx mean(r_Yt(pos_win:pos_win+2))];
+             vx=[vx mean(r_Yt(pos_win+3:pos_win+5))];
          end
          %vx=[r_Yt(floor(pos_mov(1:num_contr)./N))+2]; %considera somente 5 pimeiras contracoes
          fmean(icoleta)=median(vx);    
@@ -134,7 +135,7 @@ for icoleta=1:2,
                 vx=[]; 
                 for k=1:length(pos_mov),
                     pos_win=floor(pos_mov(k)/N);         
-                    vx=[vx mean(Yt_final(canal,pos_win:pos_win+2))];
+                    vx=[vx mean(Yt_final(canal,pos_win+3:pos_win+5))];
                 end
                     Tr_atual(:,canal)=vx;
              end

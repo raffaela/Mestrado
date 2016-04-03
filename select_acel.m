@@ -26,9 +26,9 @@ close all
         sinais=sinais';
         sinal_ac=dados.ARQdig(canal_ac,:)*(-1);
         %filtra todos canais dos aceleromeros
-        [b,a] = butter(2,10*2/fs,'low');
+        [b,a] = butter(2,5*2/fs,'low');
         sinal_ac = filtfilt(b,a,sinal_ac);
-        [b,a] = butter(2,0.01*2/fs,'high');
+        [b,a] = butter(2,0.005*2/fs,'high');
         sinal_ac = filtfilt(b,a,sinal_ac);
         t=0:1/fs:(size(sinais,2)-1)/fs;
         sinais=[sinal_ac;sinais];
@@ -64,7 +64,7 @@ close all
     nomeArq_split=strsplit(nomeArq,'.');
     nomeArq=strcat(nomeArq_split(1),'_completo.mat');
     nomeArq_split2=strsplit(char(nomeArq),'\');
-    path='C:\Users\rafaelacunha\Dropbox\processamento_dissertacao\coletas_mat_pacientes'
+    path='C:\Users\rafaelacunha\Dropbox\processamento_dissertacao\coletas_mat'
     nomeArq=fullfile(path,nomeArq_split2(end));
     save(char(nomeArq),'dados');
     

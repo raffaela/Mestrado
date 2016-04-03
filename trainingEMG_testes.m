@@ -81,16 +81,21 @@ for icoleta=1:2,
             vcrit_s=finv(0.99,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
             vcrit_i=finv(0.01,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
             figure
-            plot(t_TFE,TFE_final./max(TFE_final),'-m');
+            h1=plot(t_TFE,TFE_final./(max(TFE_final)*100),'-m','LineWidth',2);
+            %hold on
+            %plot(vt,sinal_acel,'-k');
+            
             hold on
-            plot(vt,sinal_acel,'-k');
+            plot(vt,vcrit_s*ones(1,length(vt))./(max(TFE_final)*100),'-k','LineWidth',2);
             hold on
-            plot(vt,sinal_cut,'-b');
+            plot(vt,vcrit_i*ones(1,length(vt))./(max(TFE_final)*100),'-r','LineWidth',2);
             hold on
-            plot(vt,vcrit_s*ones(1,length(vt))./max(TFE_final),'-g');
-            hold on
-             plot(vt,vcrit_i*ones(1,length(vt))./max(TFE_final),'-r');
+            h2=plot(vt,sinal_cut,'-c');
+            uistack(h1,'top')
+            uistack(h2,'bottom')
+           legend('Sinal EMG','limiar superior','limiar inferior','\Phi_{y1y2}')
         end
+        set(gca,'FontSize',14)
         if tipodet=='RMS',
                 rms = sqrt(mean(sinal.^2));
             [n1,xout] = hist(rms(1:floor(pos_mov(1,1)/N)),0:1e-006:(max(rms)));  

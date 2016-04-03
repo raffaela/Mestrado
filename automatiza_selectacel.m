@@ -1,3 +1,4 @@
+dados=dados_arquivo.dados; 
 novo_cursor=[];
 for n=length(cursor_info):-1:1
     valor=cursor_info(n).DataIndex;

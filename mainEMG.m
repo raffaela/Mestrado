@@ -2,7 +2,7 @@ function [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais
     %canais_reais:canais que deseja pesquisar
     %canal_ext:canal a ser considerado principal para movimento de extensao
     %canal_flex: canal a ser considerado principal para movimento de flexao
-    path_fig='C:\Users\rafaelacunha\Dropbox\processamento_dissertacao\figuras_teste3';
+    path_fig='C:\Users\rafaelacunha\Documents\repositorios\figuras_final_4';
     %% inicializa variaveis
     N=200; %numero de amostras(pontos) por trecho.
     M=5; %numero de trechos a serem utilizados para o calculo da TFE.
@@ -10,7 +10,7 @@ function [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais
     res_esp=fs/N;
     frinicial=70/res_esp;%18
     frfinal=110/res_esp;%25
-    ndet_min=2; %minimo de janelas seguidas indicando ativacao muscular no musculo agonista para que a classificacao se confirme
+    ndet_min=3; %minimo de janelas seguidas indicando ativacao muscular no musculo agonista para que a classificacao se confirme
     lcanais=length(canais_avaliar);
     lim_det=[];
     %% chama funcao de treinamento
@@ -68,8 +68,8 @@ function [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais
         pos_ext=find(cmd_plot==1)*N-(N-1);
         pos_desativ=find(cmd_plot==-1)*N-(N-1);
         vetor0=zeros(1,length(sinais));
-        pos_mov=cell_acel{isinal+2}.mov;
-        pos_rel=cell_acel{isinal+2}.rel;
+        pos_mov=cell_acel{isinal+2}.mov-N;
+        pos_rel=cell_acel{isinal+2}.rel-N;
         figura=figure;
         plot(vt,sinais(canal_teste,:),'-b');
         hold on

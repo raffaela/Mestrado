@@ -37,6 +37,9 @@ fs=2000;  %frequencia de amostragem
     wo = 300*2/(fs);  bw = wo/10;
     [b,a] = iirnotch(wo,bw);
     sinais = filtfilt(b,a,sinais);
+     wo = 80*2/(fs);  bw = wo/10;
+    [b,a] = iirnotch(wo,bw);
+    sinais = filtfilt(b,a,sinais);
     [b,a] = butter(2,20*2/fs,'high');
     sinais = filtfilt(b,a,sinais);
     [b,a] = butter(2,450*2/fs,'low');
