@@ -14,9 +14,8 @@ cell_acel=cell(1,4);
 num_mov=[];
 %voluntarios={'Alaise','Anderson','Andrea','Beatriz','Bruna','Bruno','Daniele','Delcy','Fernanda','Filipe','Francisco','Geraldo','Hellen','Inaiacy','Ivonete','Jessica','Karen','Lorena','Luiza','PRoberto','Rafael','Roberto','Santiago','Thais','Thays','Victor'}
 %voluntarios={'Karen'};
-%voluntarios={'Daniele'}
-%voluntarios={'Alaise','Anderson','Andrea','Beatriz','Bruna','Bruno','Daniele','Delcy','Fernanda','Filipe','Francisco','Geraldo','Hellen','Inaiacy'};
-voluntarios={'Anderson'};
+voluntarios={'Daniele'}
+%voluntarios={'Andrea'};
 for j=1:length(voluntarios)
     voluntario=char(voluntarios(1,j));
 for i=1:4
@@ -82,6 +81,17 @@ cell_canais_avaliar_duplos={[1 4],[2 5],[3 6]};
 
 %% avaliacao de duplas de canais para TFE e LDA
 %set(0,'DefaultFigureVisible','on');
+
+% tipodet='TFE';%TFE ou RMS 
+% tipoclass='TFE';
+% canal_ext=1;
+% canal_flex=2;
+% coluna_excel=2;
+% canais_avaliar=[2 5];
+% [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
+% [prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
+
+
 
 tipodet='TFE';%TFE ou RMS 
 canal_ext=1;

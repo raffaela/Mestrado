@@ -2,7 +2,7 @@ function [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais
     %canais_reais:canais que deseja pesquisar
     %canal_ext:canal a ser considerado principal para movimento de extensao
     %canal_flex: canal a ser considerado principal para movimento de flexao
-    path_fig='C:\Users\rafaelacunha\Documents\repositorios\figuras_final_4';
+    path_fig='C:\Users\rafaelacunha\Documents\repositorios\figuras_final_6';
     %% inicializa variaveis
     N=200; %numero de amostras(pontos) por trecho.
     M=5; %numero de trechos a serem utilizados para o calculo da TFE.
@@ -39,18 +39,29 @@ function [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais
         cmd_final=[zeros(1,N*(2*M-1))];%amostras iniciais não podem ser classificadas, portanto recebem 0.
         cmd_plot=[zeros(1,2*M-1)];%janelas iniciais não podem ser classificadas, portanto recebem 0.
         v_det_final=[];
-
+        res_vetor=[];
         %% realiza a classificacao janela a janela (cada uma com N amostras)
         for i=P+1:N:length(sinais),
-            [v_det,comando]=onlineEMG(fs,sinais(:,i-P:i-1),frinicial,frfinal,param1,param2,M,N,tipoclass,tipodet,lim_det);
+            [v_det,resultado]=onlineEMG(fs,sinais(:,i-P:i-1),frinicial,frfinal,param1,param2,M,N,tipoclass,tipodet,lim_det);
             v_det_final=[v_det_final v_det];
             cmd=0;
+            res=0;
             if size(v_det_final,2)>=8,
-               if ((v_det_final(canal_ext,end-(ndet_min-1):end)==v_ndet_min & comando==1) |(v_det_final(canal_flex,end-(ndet_min-1):end)==v_ndet_min & comando==2)),
-                   cmd=comando;
-                    else if (cmd_plot(end-1)==1 || cmd_plot(end-1)==2),
-                       cmd=-1; %desativação muscular
+               %if ((v_det_final(canal_ext,end-(ndet_min-1):end)==v_ndet_min & comando==1) |(v_det_final(canal_flex,end-(ndet_min-1):end)==v_ndet_min & comando==2)),
+                if ((v_det_final(canal_ext,end)==v_ndet_min & resultado==1) |(v_det_final(canal_flex,end)==v_ndet_min & resultado==2)),  
+                    res=resultado;
+                    %cmd=comando;
+                    %else if (cmd_plot(end-1)==1 || cmd_plot(end-1)==2),
+                    else if ((v_det_final(canal_ext,end)==-1)||(v_det_final(canal_flex,end)==-1)),
+                       %cmd=-1; %desativação muscular
+                            res=-1;
                         end
+                end
+            end
+            res_vetor=[res_vetor res];
+            if length(res_vetor)>=3,
+                if diff(res_vetor(end-2:end))==[0 0],
+                    cmd=res;
                 end
             end
             cmd_final=[cmd_final cmd*ones(1,N)];
