@@ -2,7 +2,7 @@ function [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais
     %canais_reais:canais que deseja pesquisar
     %canal_ext:canal a ser considerado principal para movimento de extensao
     %canal_flex: canal a ser considerado principal para movimento de flexao
-    path_fig='C:\Users\rafaelacunha\Documents\repositorios\figuras_final_7';
+    path_fig='C:\Users\rafaelacunha\Documents\repositorios\figuras_final_6';
     %% inicializa variaveis
     N=200; %numero de amostras(pontos) por trecho.
     M=5; %numero de trechos a serem utilizados para o calculo da TFE.
@@ -50,10 +50,8 @@ function [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais
                %if ((v_det_final(canal_ext,end-(ndet_min-1):end)==v_ndet_min & comando==1) |(v_det_final(canal_flex,end-(ndet_min-1):end)==v_ndet_min & comando==2)),
                 if ((v_det_final(canal_ext,end)==1 & resultado==1) |(v_det_final(canal_flex,end)==1 & resultado==2)),  
                     res=resultado;
-                 
-                else if (s_rel==1&(v_det_final(canal_ext,end)==-1)|(s_rel==2&(v_det_final(canal_flex,end)==-1))),
-                        res=-1;
-                     end 
+                    s_rel=res;
+               
                     %cmd=comando;
                     %else if (cmd_plot(end-1)==1 || cmd_plot(end-1)==2),
 %                     else if ((v_det_final(canal_ext,end)==-1)||(v_det_final(canal_flex,end)==-1)),
@@ -64,15 +62,13 @@ function [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais
             end
                  
             res_vetor=[res_vetor res];
+            if (s_rel==1&(v_det_final(canal_ext,end)==-1)|(s_rel==2&(v_det_final(canal_flex,end)==-1))),
+                        res=-1;
+                        s_rel=0;
+            end 
             if length(res_vetor)>=ndet_min,
-                if (res_vetor(end-ndet_min+1:end)==(-1*ones(1,ndet_min))),
-                    s_rel=0;
-                end
                 if diff(res_vetor(end-ndet_min+1:end))==zeros(1,ndet_min-1),
                     cmd=res;
-                end
-                if (cmd==1|cmd==2),
-                   s_rel=cmd;
                 end
             end
             final=[cmd_final cmd*ones(1,N)];

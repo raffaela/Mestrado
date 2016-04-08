@@ -13,5 +13,7 @@ cell_acel{1,3}.mov=[9 25];
 cell_acel{1,4}.mov=[9 25];
 cell_acel{1,3}.rel=[16 32];
 cell_acel{1,4}.rel=[16 32];
-cell_cmd_plot={[0 0 0 0 1 1 0 0 -1 -1 0 0 1 1 0 0 -1 -1 0 0 ],[0 0 0 0 2 2 0 0 -1 -1 0 0 2 2 0 0 -1 -1 0 0]};
+%cell_cmd_plot={[0 0 0 0 1 1 0 0 -1 -1 0 0 1 1 0 0 -1 -1 0 0 ],[0 0 0 0 2 2 0 0 -1 -1 0 0 2 2 0 0 -1 -1 0 0]};
+cell_cmd_plot={[0 0 0 0 2 2 0 0 -1 -1 0 0 1 1 0 0 -1 -1 0 0 ],[0 0 0 0 2 2 0 0 -1 -1 0 0 2 2 0 0 -1 -1 0 0]};
+
 [prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
