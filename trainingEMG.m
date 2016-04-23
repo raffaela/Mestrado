@@ -44,7 +44,11 @@ for icoleta=1:2,
         sinal=sinal_filtrado(1:N*E);
         vt=0:1/fs:(length(sinal)-1)/fs;
         sinal=reshape(sinal,N,E);  %sinal transformado em matriz com cada coluna correspondendo a um trecho e cada linha correspondendo a uma amostra (ponto) do sinal.
-        
+
+%                 for j=1:E,
+%             vtest=sinal(:,j);
+%             [teste,vp]=kstest(vtest./10000)
+%         end
        
          Sf=fft(sinal); % Calculo do espectro do sinal para cada trecho (coluna).
        %% calculo do TFE
@@ -69,8 +73,8 @@ for icoleta=1:2,
         
         %% Calcula valor critico (de acordo com a distribuicao F teorica)
         if tipodet=='TFE',
-            vcrit_s=finv(0.95,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
-            vcrit_i=finv(0.05,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
+            vcrit_s=finv(0.975,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
+            vcrit_i=finv(0.025,2*M*nbins,gl); % alfa=0.05, graus de liberdade=2*M*nbins e 2*M*nbins
         end
         if tipodet=='RMS',
             rms = sqrt(mean(sinal.^2));
@@ -117,6 +121,7 @@ for icoleta=1:2,
              pos_win=floor(pos_mov(k)/N);
              vx=[vx mean(r_Yt(pos_win+3:pos_win+5))];
          end
+         
          %vx=[r_Yt(floor(pos_mov(1:num_contr)./N))+2]; %considera somente 5 pimeiras contracoes
          fmean(icoleta)=median(vx);    
          lambda=fmean*(gl-2)-gl;
@@ -137,6 +142,7 @@ for icoleta=1:2,
                     pos_win=floor(pos_mov(k)/N);         
                     vx=[vx mean(Yt_final(canal,pos_win+3:pos_win+5))];
                 end
+                %[teste,p]=kstest(vx)
                     Tr_atual(:,canal)=vx;
              end
 %                for canal=1:lcanais,
@@ -153,10 +159,25 @@ for icoleta=1:2,
                  r_Yt2=Yt_final(3,:)./Yt_final(5,:);
                  r_Yt3=Yt_final(2,:)./Yt_final(4,:);
                  Tr_atual= [r_Yt1(1,floor(pos_mov(1:num_contr)./N))' r_Yt2(1,floor(pos_mov(1:num_contr)./N))' r_Yt3(1,floor(pos_mov(1:num_contr)./N))'];
+             
+             
+            else if tipoclass=='SVM',
+                    Tr_atual=[];
+                    Gr_atual=[];
+
+                    for canal=1:lcanais, 
+                    vx=[]; 
+                    for k=1:length(pos_mov),
+                        pos_win=floor(pos_mov(k)/N);         
+                        vx=[vx mean(Yt_final(canal,pos_win+3:pos_win+5))];
+                    end
+                    Tr_atual(:,canal)=vx;
+                    end
+                end
              end
          end
      end
-     if tipoclass=='LDA'|tipoclass=='FDA',
+     if tipoclass=='LDA'|tipoclass=='FDA'|tipoclass=='SVM',
          Tr=[Tr; Tr_atual];
          if icoleta==1,  
             Gr_atual=repmat({'extensao'},size(Tr_atual,1),1);
@@ -204,8 +225,15 @@ else if tipoclass=='LDA'|tipoclass=='FDA',
          end
         param1=Tr;
         param2=Gr;
+    else if tipoclass=='SVM',
+            figure
+            svmstr=svmtrain(Tr,Gr,'kernel_function','rbf','ShowPlot',true);
+            nome_fig=strcat(voluntario,'_',tipoclass,'_',tipodet,'_',int2str(canais_avaliar),'_SVMclass');
+            saveas(figura,char(fullfile(path_fig,nome_fig)),'fig');
+            param1=svmstr;
+            param2=[];
+        end
     end
-end
  
 end
  

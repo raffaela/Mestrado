@@ -151,9 +151,18 @@ else if tipoclass=='LDA',
             XY=[];
             XY=[r_Yt1 r_Yt2 r_Yt3];
             [C,err,P,logp,coeff]=classify(XY,Tr,Gr,'linear');
-        end
+          else if tipoclass=='SVM',
+                svmstr=param1;
+                XY=[];
+                for canal=1:lcanais
+                    v_canal=Yt_final(canal);
+                    XY=[XY v_canal];
+                end
+                 C=svmclassify(svmstr,XY);
+                end
+            end
     end
-        if tipoclass=='LDA'|tipoclass=='FDA',
+        if tipoclass=='LDA'|tipoclass=='FDA'|tipoclass=='SVM',
             res=C(1);
             if strcmp(res,'extensao'),
                 comando=1;  

@@ -2,12 +2,12 @@ function [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais
     %canais_reais:canais que deseja pesquisar
     %canal_ext:canal a ser considerado principal para movimento de extensao
     %canal_flex: canal a ser considerado principal para movimento de flexao
-    path_fig='C:\Users\rafaelacunha\Documents\repositorios\figuras_final_7';
+    path_fig='C:\Users\rafaelacunha\Documents\repositorios\figuras_final_10';
     %% inicializa variaveis
     N=200; %numero de amostras(pontos) por trecho.
     M=5; %numero de trechos a serem utilizados para o calculo da TFE.
     fs=2000;  %frequencia de amostragem
-    res_esp=fs/N;
+    res_esp=fs/N; %resolucao espectral
     frinicial=70/res_esp;%18
     frfinal=110/res_esp;%25
     ndet_min=3; %minimo de janelas seguidas indicando ativacao muscular no musculo agonista para que a classificacao se confirme
@@ -65,9 +65,9 @@ function [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais
                  
             res_vetor=[res_vetor res];
             if length(res_vetor)>=ndet_min,
-                if (res_vetor(end-ndet_min+1:end)==(-1*ones(1,ndet_min))),
-                    s_rel=0;
-                end
+%                 if (res_vetor(end-ndet_min+1:end)==(-1*ones(1,ndet_min))),
+%                     s_rel=0;
+%                 end
                 if diff(res_vetor(end-ndet_min+1:end))==zeros(1,ndet_min-1),
                     cmd=res;
                 end
@@ -90,8 +90,8 @@ function [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais
         pos_ext=find(cmd_plot==1)*N-(N-1);
         pos_desativ=find(cmd_plot==-1)*N-(N-1);
         vetor0=zeros(1,length(sinais));
-        pos_mov=cell_acel{isinal+2}.mov-N;
-        pos_rel=cell_acel{isinal+2}.rel-N;
+        pos_mov=cell_acel{isinal+2}.mov-2*N; %plota duas janelas antes da janela do acelerometro para seguir o criterio do assessment
+        pos_rel=cell_acel{isinal+2}.rel-2*N;
         figura=figure;
         plot(vt,sinais(canal_teste,:),'-b');
         hold on
