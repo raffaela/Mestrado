@@ -1,6 +1,6 @@
 clear all
 close all
-canais_reais=[2 8];%canais nos quais será baseada a classificação
+canais_reais=[2 7];%canais nos quais será baseada a classificação
 ncanais_dados=3;
 canal_ac=1+ncanais_dados;
 canais=canais_reais+ncanais_dados*ones(1,length(canais_reais));

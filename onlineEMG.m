@@ -152,6 +152,7 @@ else if tipoclass=='LDA',
             XY=[];
             XY=[r_Yt1 r_Yt2 r_Yt3];
             [C,err,P,logp,coeff]=classify(XY,Tr,Gr,'linear');
+<<<<<<< HEAD
           else if tipoclass=='SVM',
                 svmstr=param1;
                 XY=[];
@@ -163,8 +164,11 @@ else if tipoclass=='LDA',
                  C=svmclassify(svmstr,XY);
                 end
             end
+=======
+        end
+>>>>>>> parent of 3b7c81e... Inclusão do classificador SVM + alterações necessárias no programa executável
     end
-        if tipoclass=='LDA'|tipoclass=='FDA'|tipoclass=='SVM',
+        if tipoclass=='LDA'|tipoclass=='FDA',
             res=C(1);
             if strcmp(res,'extensao'),
                 comando=1;  

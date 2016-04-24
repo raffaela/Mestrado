@@ -12,16 +12,22 @@ carregasinais=['treinamento extensao','treinamento flexao','teste extensao','tes
 cell_sinais=cell(1,4); %sinais necessarios a analise serao reunidos em uma celula.
 cell_acel=cell(1,4);
 num_mov=[];
+<<<<<<< HEAD
 voluntarios={'Bruna'};
 %
 %voluntarios={'Alaise','Anderson','Andrea','Beatriz','Bruna','Bruno','Daniele','Delcy','Fernanda','Filipe','Francisco','Geraldo','Hellen'}
 %voluntarios={'Inaiacy','Ivonete','Jessica','Karen','Lorena','Luiza','PRoberto','Rafael','Roberto','Santiago','Thais','Thays','Victor'};
 %voluntarios={'Jessica'}
+=======
+%voluntarios={'Alaise','Anderson','Andrea','Beatriz','Bruna','Bruno','Daniele','Delcy','Fernanda','Filipe','Francisco','Geraldo','Hellen','Inaiacy','Ivonete','Jessica','Karen','Lorena','Luiza','PRoberto','Rafael','Roberto','Santiago','Thais','Thays','Victor'}
+%voluntarios={'Inaiacy','Ivonete','Jessica','Karen','Lorena','Luiza','PRoberto','Rafael','Roberto','Santiago','Thais','Thays','Victor'};
+voluntarios={'Santiago','Ivonete'}
+>>>>>>> parent of 3b7c81e... Inclusão do classificador SVM + alterações necessárias no programa executável
 for j=1:length(voluntarios)
     voluntario=char(voluntarios(1,j));
 for i=1:4
     if i==1|i==3,
-      tarefa='Abertura';
+        tarefa='Abertura';
     else tarefa='Fechamento';
     end
     if i==1|i==2,
@@ -77,55 +83,22 @@ if num_mov(3)~= num_mov(4),
     cell_acel{4}.mov=cell_acel{4}.mov(1,1:min_mov);
     cell_acel{4}.rel=cell_acel{4}.rel(1,1:min_mov);
 end
-tipos_classes={'TFE','LDA','SVM'};
+tipos_classes={'TFE','LDA'};
 cell_canais_avaliar_duplos={[1 4],[2 5],[3 6]};
 
 %% avaliacao de duplas de canais para TFE e LDA
 %set(0,'DefaultFigureVisible','on');
 
-%% miniteste com classificacao especifica
 % tipodet='TFE';%TFE ou RMS 
-% tipoclass='SVM';
+% tipoclass='TFE';
 % canal_ext=1;
 % canal_flex=2;
-% coluna_excel=10;
-% canais_avaliar=[1 3 4 6];
+% coluna_excel=15;
+% canais_avaliar=[1 4];
 % [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
 % [prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
-% end
 
-% 
-%%testes s� com SVM
-% tipodet='TFE';%TFE ou RMS 
-% canal_ext=1;
-% canal_flex=2;
-% coluna_excel=11;
-%     tipoclass='SVM';
-%     for q=1:length(cell_canais_avaliar_duplos)
-%         canais_avaliar=cell_canais_avaliar_duplos{1,q};
-%          coluna_excel=coluna_excel+1;
-%         [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
-%         [prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
-%     end
-%     
-%     
-% %    avaliacao de multiplos canais com LDA
-% coluna_excel=coluna_excel+1;
-% canais_avaliar=[1 2 4 5];
-% canal_ext=1;
-% canal_flex=3;
-% tipoclass='SVM';
-% [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
-% [prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
-% 
-% coluna_excel=coluna_excel+1;
-% canais_avaliar=[1 2 3 4 5 6]
-% canal_ext=1;
-% canal_flex=4;
-% tipoclass='SVM';
-% [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
-% [prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
-% 
+
 
 tipodet='TFE';%TFE ou RMS 
 canal_ext=1;
@@ -141,6 +114,7 @@ for p=1:length(tipos_classes)
     end
 end
 
+
 %% avaliacao de multiplos canais com LDA
 coluna_excel=coluna_excel+1;
 canais_avaliar=[1 2 4 5];
@@ -151,47 +125,12 @@ tipoclass='LDA';
 [prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
 
 coluna_excel=coluna_excel+1;
-canais_avaliar=[1 3 4 6];
-canal_ext=1;
-canal_flex=3;
-tipoclass='LDA';
-[cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
-[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
-
-
-coluna_excel=coluna_excel+1;
 canais_avaliar=[1 2 3 4 5 6]
 canal_ext=1;
 canal_flex=4;
 tipoclass='LDA';
 [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
 [prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
-
-%% avaliacao de multiplos canais com SVM
-coluna_excel=coluna_excel+1;
-canais_avaliar=[1 2 4 5];
-canal_ext=1;
-canal_flex=3;
-tipoclass='SVM';
-[cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
-[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
-
-coluna_excel=coluna_excel+1;
-canais_avaliar=[1 3 4 6];
-canal_ext=1;
-canal_flex=3;
-tipoclass='SVM';
-[cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
-[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
-
-coluna_excel=coluna_excel+1;
-canais_avaliar=[1 2 3 4 5 6]
-canal_ext=1;
-canal_flex=4;
-tipoclass='SVM';
-[cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais,cell_acel,voluntario,tipoclass,tipodet);
-[prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,coluna_excel,cell_acel,cell_cmd_plot);
-
 
 coluna_excel=coluna_excel+1;
 canais_avaliar=[1 2 3 4 5 6]
