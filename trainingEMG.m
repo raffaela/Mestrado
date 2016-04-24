@@ -25,6 +25,7 @@ figura=figure;
 for icoleta=1:2,
      ax=[];
      Yt_final=[];
+     TFE_final=[];
      
      sinais=cell_sinais{icoleta}(canais_avaliar,:);
     
@@ -69,6 +70,7 @@ for icoleta=1:2,
          end
            rep2=zeros(1,2*M-1); %janelas iniciais nao tem valor do Yt atribuido e portanto recebem 0.
            Yt_final(icanal,:)=[rep2 Yt_f];
+           TFE_final(icanal,:)=[rep2 TFE];
            gl=2*M*nbins*lcanais/2;
         
         %% Calcula valor critico (de acordo com a distribuicao F teorica)
@@ -108,6 +110,7 @@ for icoleta=1:2,
      if tipoclass=='TFE',
          if lcanais==2,
             r_Yt=Yt_final(1,:)./Yt_final(2,:); %razao entre as energias do musculo extensor e o flexor.
+           
          else if lcanais==4,
             r_Yt=(Yt_final(1,:)+Yt_final(2,:))./(Yt_final(3,:)+Yt_final(4,:));
              else if lcanais==6,
@@ -141,6 +144,8 @@ for icoleta=1:2,
                 for k=1:length(pos_mov),
                     pos_win=floor(pos_mov(k)/N);         
                     vx=[vx mean(Yt_final(canal,pos_win+3:pos_win+5))];
+                    %vx=[vx TFE_final(canal,pos_win+1) TFE_final(canal,pos_win+2) TFE_final(canal,pos_win+3) ];
+                   
                 end
                 %[teste,p]=kstest(vx)
                     Tr_atual(:,canal)=vx;
@@ -170,6 +175,7 @@ for icoleta=1:2,
                     for k=1:length(pos_mov),
                         pos_win=floor(pos_mov(k)/N);         
                         vx=[vx mean(Yt_final(canal,pos_win+3:pos_win+5))];
+                        %vx=[vx TFE_final(canal,pos_win+1) TFE_final(canal,pos_win+2) TFE_final(canal,pos_win+3) ];
                     end
                     Tr_atual(:,canal)=vx;
                     end

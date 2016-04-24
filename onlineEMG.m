@@ -138,6 +138,7 @@ else if tipoclass=='LDA',
         XY=[];
         for canal=1:lcanais
             v_canal=Yt_final(canal);
+            %v_canal=TFE(canal);
             XY=[XY v_canal];
         end
         [C,err,P,logp,coeff]=classify(XY,Tr,Gr,'linear');
@@ -156,6 +157,7 @@ else if tipoclass=='LDA',
                 XY=[];
                 for canal=1:lcanais
                     v_canal=Yt_final(canal);
+                    %v_canal=TFE(canal);
                     XY=[XY v_canal];
                 end
                  C=svmclassify(svmstr,XY);

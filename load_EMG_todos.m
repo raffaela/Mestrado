@@ -12,11 +12,11 @@ carregasinais=['treinamento extensao','treinamento flexao','teste extensao','tes
 cell_sinais=cell(1,4); %sinais necessarios a analise serao reunidos em uma celula.
 cell_acel=cell(1,4);
 num_mov=[];
-voluntarios={'Fernanda','Filipe','Francisco','Geraldo','Hellen'};
+voluntarios={'Bruna'};
 %
 %voluntarios={'Alaise','Anderson','Andrea','Beatriz','Bruna','Bruno','Daniele','Delcy','Fernanda','Filipe','Francisco','Geraldo','Hellen'}
 %voluntarios={'Inaiacy','Ivonete','Jessica','Karen','Lorena','Luiza','PRoberto','Rafael','Roberto','Santiago','Thais','Thays','Victor'};
-%voluntarios={'Beatriz'}
+%voluntarios={'Jessica'}
 for j=1:length(voluntarios)
     voluntario=char(voluntarios(1,j));
 for i=1:4
@@ -57,7 +57,7 @@ for i=1:4
     wo = 300*2/(fs);  bw = wo/10;
     [b,a] = iirnotch(wo,bw);
     sinais = filtfilt(b,a,sinais);
-    [b,a] = butter(2,15*2/fs,'high');
+    [b,a] = butter(2,20*2/fs,'high');
     sinais = filtfilt(b,a,sinais);
     [b,a] = butter(2,450*2/fs,'low');
     sinais = filtfilt(b,a,sinais);
