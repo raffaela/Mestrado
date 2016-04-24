@@ -1,6 +1,6 @@
 function [prec_ext,prec_flex,sens_ext,sens_flex,esp_ext,esp_flex,overall_acc]=assess_results(N,voluntario,tipoclass,tipodet,canais_avaliar,col_excel,cell_acel,cell_cmd_plot)
-%métricas de resultados do detector
-inicio=1;
+%métricas de performance do detector
+
 prec_ext=0;
 sens_ext=0;
 prec_flex=0;
@@ -36,8 +36,9 @@ for isinal=1:length(vect_isinal),
     %% computa posicoes dadas pelo acelerometro.
     pos_mov=cell_acel{1,isinal+2}.mov;
     pos_rel=cell_acel{1,isinal+2}.rel;
-    w_mov=ceil(pos_mov(:,:)./N);
-    w_rel=ceil(pos_rel(:,:)./N);
+    inicio=ceil((pos_mov(1)-6000)./N)-2;
+    w_mov=ceil(pos_mov(:,:)./N)-2;
+    w_rel=ceil(pos_rel(:,:)./N)-2;
     
    
     %% pega resultado do detector
@@ -67,14 +68,14 @@ for isinal=1:length(vect_isinal),
         verdade_rep=[verdade_rep;trecho_rep2];
         verdade_rel=[verdade_rel;trecho_rel];       
     end
-    verdade_mov
+  
     %% avaliacao dos trechos de movimento
     for k=1:size(verdade_mov,1),
         %% computa verdadeiros positivos e falsos negativos para a classe em questão
         if find(cmd_plot(verdade_mov(k,1):verdade_mov(k,2))==vect_isinal(isinal)),
             find_vp=find((cmd_plot(verdade_mov(k,1):verdade_mov(k,2))==vect_isinal(isinal))|(cmd_plot(verdade_mov(k,1):verdade_mov(k,2))==0));
             num_vp=num_vp+length(find_vp);
-        else num_fn=num_fn+verdade_mov(k,2)-verdade_mov(k,1)+1
+        else num_fn=num_fn+verdade_mov(k,2)-verdade_mov(k,1)+1;
         end
         %% computa falsos positivos e verdadeiros negativos para outras classes
         find_fp_2=find((cmd_plot(verdade_mov(k,1):verdade_mov(k,2)))==setdiff(vect_isinal,vect_isinal(isinal)));
@@ -88,7 +89,7 @@ for isinal=1:length(vect_isinal),
      for l=1:size(verdade_rel,1),
              if find(cmd_plot(verdade_rel(l,1):verdade_rel(l,2))==-1),
                 find_vp_rel=find((cmd_plot(verdade_rel(l,1):verdade_rel(l,2))==-1)|(cmd_plot(verdade_rel(l,1):verdade_rel(l,2))==0));
-                num_vp_rel=num_vp_rel+length(find_vp_rel)
+                num_vp_rel=num_vp_rel+length(find_vp_rel);
             else num_fn_rel=num_fn_rel+verdade_rel(l,2)-verdade_rel(l,1)+1;
             end
 %             find_vp_rel=find((cmd_plot(verdade_rel(l,1):verdade_rel(l,2)))==-1);         
@@ -159,7 +160,7 @@ arq_resultado_mat=strcat(voluntario,'_',tipoclass,'_',tipodet,'_',int2str(canais
 path_resultado_mat=fullfile(dir_resultado,arq_resultado_mat);
 % save(char(path_resultado_mat),'prec_ext','sens_ext','prec_flex','sens_flex','esp_ext','esp_flex','overall_acc');
 resultados=[sens_ext; sens_flex; sens_rel; esp_ext; esp_flex; esp_rel; prec_ext; prec_flex; prec_rel; overall_acc];
-arq_resultado_xlsx='resultado_final_7.xlsx';
+arq_resultado_xlsx='resultado_final_11.xlsx';
 sheet=voluntario;
 writevar(resultados,col_excel,arq_resultado_xlsx,sheet);
 % T = table(prec_ext,sens_ext,prec_flex,sens_flex,esp_ext,esp_flex,overall_acc);

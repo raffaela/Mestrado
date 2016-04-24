@@ -2,22 +2,22 @@ function [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais
     %canais_reais:canais que deseja pesquisar
     %canal_ext:canal a ser considerado principal para movimento de extensao
     %canal_flex: canal a ser considerado principal para movimento de flexao
-    path_fig='C:\Users\rafaelacunha\Documents\repositorios\figuras_final_7';
+    path_fig='C:\Users\rafaelacunha\Documents\repositorios\figuras_final_11';
     %% inicializa variaveis
     N=200; %numero de amostras(pontos) por trecho.
     M=5; %numero de trechos a serem utilizados para o calculo da TFE.
     fs=2000;  %frequencia de amostragem
-    res_esp=fs/N;
-    frinicial=70/res_esp;%18
-    frfinal=110/res_esp;%25
+    res_esp=fs/N; %resolucao espectral
+    frinicial=30/res_esp;%18
+    frfinal=50/res_esp;%25
     ndet_min=3; %minimo de janelas seguidas indicando ativacao muscular no musculo agonista para que a classificacao se confirme
     lcanais=length(canais_avaliar);
     lim_det=[];
     %% chama funcao de treinamento
    if tipodet=='TFE',
-        [param1,param2]=trainingEMG(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet,path_fig,voluntario);
+        [param1,param2,v_base]=trainingEMG(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet,path_fig,voluntario);
    else 
-       [param1,param2,lim_det]=trainingEMG(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet,voluntario);
+       [param1,param2,v_base,lim_det]=trainingEMG(fs,canais_avaliar,M,N,frinicial,frfinal,cell_sinais,cell_acel,tipoclass,tipodet,voluntario);
    end
     %Para TFE: param1=limiar,param2=maior
     %Para LDA: param1=Tr, param2=Gr
@@ -42,7 +42,8 @@ function [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais
         res_vetor=[];
         %% realiza a classificacao janela a janela (cada uma com N amostras)
         for i=P+1:N:length(sinais),
-            [v_det,resultado]=onlineEMG(fs,sinais(:,i-P:i-1),frinicial,frfinal,param1,param2,M,N,tipoclass,tipodet,lim_det);
+          
+            [v_det,resultado]=onlineEMG(fs,sinais(:,i-P:i-1),frinicial,frfinal,param1,param2,M,N,tipoclass,tipodet,v_base,lim_det);
             v_det_final=[v_det_final v_det];
             cmd=0;
             res=0;
@@ -65,9 +66,9 @@ function [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais
                  
             res_vetor=[res_vetor res];
             if length(res_vetor)>=ndet_min,
-                if (res_vetor(end-ndet_min+1:end)==(-1*ones(1,ndet_min))),
-                    s_rel=0;
-                end
+%                 if (res_vetor(end-ndet_min+1:end)==(-1*ones(1,ndet_min))),
+%                     s_rel=0;
+%                 end
                 if diff(res_vetor(end-ndet_min+1:end))==zeros(1,ndet_min-1),
                     cmd=res;
                 end
@@ -90,8 +91,8 @@ function [cell_cmd_plot]=mainEMG(canais_avaliar,canal_ext,canal_flex,cell_sinais
         pos_ext=find(cmd_plot==1)*N-(N-1);
         pos_desativ=find(cmd_plot==-1)*N-(N-1);
         vetor0=zeros(1,length(sinais));
-        pos_mov=cell_acel{isinal+2}.mov-N;
-        pos_rel=cell_acel{isinal+2}.rel-N;
+        pos_mov=cell_acel{isinal+2}.mov-2*N; %plota duas janelas antes da janela do acelerometro para seguir o criterio do assessment
+        pos_rel=cell_acel{isinal+2}.rel-2*N;
         figura=figure;
         plot(vt,sinais(canal_teste,:),'-b');
         hold on

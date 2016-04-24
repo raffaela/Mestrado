@@ -1,4 +1,4 @@
-function [v_det,comando]= onlineEMG(fs,sinais,frinicial,frfinal,param1,param2,M,N,tipoclass,tipodet,lim_det)
+function [v_det,comando]= onlineEMG(fs,sinais,frinicial,frfinal,param1,param2,M,N,tipoclass,tipodet,v_base,lim_det)
 %comando:0=repouso;1=extensao;2=flexao
     lcanais=size(sinais,1);
     fmean=[];
@@ -137,8 +137,7 @@ else if tipoclass=='LDA',
         Gr=param2;
         XY=[];
         for canal=1:lcanais
-            v_canal=Yt_final(canal);
-            %v_canal=TFE(canal);
+            v_canal=Yt_final(canal)./v_base(canal)
             XY=[XY v_canal];
         end
         [C,err,P,logp,coeff]=classify(XY,Tr,Gr,'linear');
@@ -152,23 +151,18 @@ else if tipoclass=='LDA',
             XY=[];
             XY=[r_Yt1 r_Yt2 r_Yt3];
             [C,err,P,logp,coeff]=classify(XY,Tr,Gr,'linear');
-<<<<<<< HEAD
           else if tipoclass=='SVM',
                 svmstr=param1;
                 XY=[];
                 for canal=1:lcanais
-                    v_canal=Yt_final(canal);
-                    %v_canal=TFE(canal);
+                    v_canal=Yt_final(canal)./v_base(canal);
                     XY=[XY v_canal];
                 end
                  C=svmclassify(svmstr,XY);
                 end
             end
-=======
-        end
->>>>>>> parent of 3b7c81e... Inclusão do classificador SVM + alterações necessárias no programa executável
     end
-        if tipoclass=='LDA'|tipoclass=='FDA',
+        if tipoclass=='LDA'|tipoclass=='FDA'|tipoclass=='SVM',
             res=C(1);
             if strcmp(res,'extensao'),
                 comando=1;  
